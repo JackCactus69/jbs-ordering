@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>JBS Ordering Guide – Interactive</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 16px;
+      color-scheme: dark;
+    }
+    body {
+      margin: 0;
+      padding: 1.25rem;
+      background: #020617;
+      color: #e5e7eb;
+    }
+    body.noscript-warning .noscript-message {
+      display: block;
+    }
+    h1 {
+      margin-top: 0;
+      font-size: 1.4rem;
+    }
+    .app {
+      max-width: 1100px;
+      margin: 0 auto;
+      background: #020617;
+      border-radius: 1rem;
+      padding: 0.9rem 1rem 1.25rem;
+      box-shadow: 0 18px 35px rgba(0,0,0,0.65);
+      border: 1px solid #1e293b;
+    }
+    .noscript-message {
+      display: none;
+      margin-bottom: 0.75rem;
+      padding: 0.65rem 0.75rem;
+      border-radius: 0.75rem;
+      border: 1px solid #f97316;
+      background: rgba(248, 113, 113, 0.08);
+      font-size: 0.8rem;
+      color: #fed7aa;
+    }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+    .controls label {
+      font-size: 0.85rem;
+      color: #9ca3af;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    .controls input[type="search"] {
+      padding: 0.35rem 0.6rem;
+      border-radius: 999px;
+      border: 1px solid #1f2933;
+      background: #020617;
+      color: inherit;
+      min-width: 140px;
+      font-size: 0.85rem;
+    }
+    .controls select {
+      padding: 0.3rem 0.6rem;
+      border-radius: 999px;
+      border: 1px solid #1f2933;
+      background: #020617;
+      color: inherit;
+      font-size: 0.85rem;
+    }
+    .controls button {
+      padding: 0.35rem 0.7rem;
+      border-radius: 999px;
+      border: 1px solid #374151;
+      background: #111827;
+      color: inherit;
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
+    .controls button:hover {
+      background: #1f2937;
+    }
+    .controls-main {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+      flex: 1 1 auto;
+    }
+    .controls-extra {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      margin-left: auto;
+      text-align: right;
+    }
+    .table-wrapper {
+      max-height: 70vh;
+      overflow-y: auto;
+      overflow-x: auto;
+      border-radius: 0.75rem;
+      border: 1px solid #1f2937;
+      background: radial-gradient(circle at top, #020617, #020617);
+      -webkit-overflow-scrolling: touch;
+    }
+    table {
+      width: 100%;
+      min-width: 640px;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+    }
+    thead {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background: #020617;
+    }
+    th, td {
+      padding: 0.35rem 0.45rem;
+      text-align: left;
+      border-bottom: 1px solid #111827;
+      white-space: nowrap;
+    }
+    th {
+      font-weight: 600;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #9ca3af;
+    }
+    th.item-col {
+      position: sticky;
+      left: 0;
+      z-index: 3;
+      background: #020617;
+    }
+    td.item {
+      white-space: normal;
+      max-width: 260px;
+      position: sticky;
+      left: 0;
+      z-index: 2;
+      background: #020617;
+    }
+    tr:nth-child(even) td:not(.item) {
+      background: rgba(15,23,42,0.75);
+    }
+    tr:nth-child(odd) td:not(.item) {
+      background: rgba(15,23,42,0.5);
+    }
+    input.on-hand-input {
+      width: 4.2rem;
+      padding: 0.3rem 0.35rem;
+      border-radius: 0.5rem;
+      border: 1px solid #1e293b;
+      background: #020617;
+      color: inherit;
+      font-size: 0.8rem;
+      text-align: right;
+    }
+    td.to-order {
+      font-variant-numeric: tabular-nums;
+      text-align: right;
+      color: #f9fafb;
+      transition: color 0.15s ease-out;
+    }
+    td.to-order.needed {
+      color: #22c55e;
+      font-weight: 600;
+    }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.1rem 0.45rem;
+      border-radius: 999px;
+      background: rgba(55,65,81,0.7);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #e5e7eb;
+      white-space: nowrap;
+    }
+    .footer-note {
+      margin-top: 0.75rem;
+      font-size: 0.75rem;
+      color: #6b7280;
+    }
+    .hint {
+      font-size: 0.72rem;
+      color: #9ca3af;
+    }
+    .hint strong {
+      color: #bbf7d0;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 0.6rem;
+      }
+      .app {
+        padding: 0.75rem 0.75rem 1rem;
+        border-radius: 0.75rem;
+      }
+      h1 {
+        font-size: 1.2rem;
+      }
+      .controls {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .controls-main {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .controls label {
+        justify-content: space-between;
+      }
+      .controls input[type="search"],
+      .controls select {
+        width: 100%;
+      }
+      .controls button {
+        align-self: flex-start;
+      }
+      .controls-extra {
+        width: 100%;
+        text-align: left;
+        margin-left: 0;
+      }
+      table {
+        min-width: 520px;
+        font-size: 0.78rem;
+      }
+      th, td {
+        padding: 0.3rem 0.35rem;
+      }
+      .footer-note {
+        font-size: 0.7rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      table {
+        min-width: 460px;
+      }
+      input.on-hand-input {
+        width: 3.4rem;
+      }
+    }
+  </style>
+</head>
+<body class="noscript-warning">
+  <div class="app">
+    <h1>JBS Nightly Ordering Guide</h1>
+    <div class="noscript-message">
+      This viewer isn&apos;t running the interactive part of this file (JavaScript is disabled).  
+      To use the ordering calculator, either tap the <strong>share</strong> icon and open this file in Safari,
+      or tap <a href=&quot;https://YOUR_GITHUB_USERNAME.github.io/jbs-ordering/&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;><strong>Open interactive version</strong></a> after you&apos;ve set up GitHub Pages for it.
+    </div>
+    <div class="controls">
+      <div class="controls-main">
+        <span class="tag">Mobile-ready</span>
+        <label>
+          <span>Search:</span>
+          <input type="search" id="searchBox" placeholder="Filter items…" />
+        </label>
+        <label>
+          <span>View:</span>
+          <select id="viewMode">
+            <option value="both">Weekday &amp; Weekend</option>
+            <option value="weekday">Weekday only</option>
+            <option value="weekend">Weekend only</option>
+          </select>
+        </label>
+        <button type="button" id="resetBtn">Reset On Hand</button>
+      </div>
+      <div class="controls-extra">
+        <span class="hint">
+          Tip: On phones, drag left/right on the table to see all columns. Rotate to landscape for a wider view.
+        </span>
+        <span class="hint">
+          Green <strong>To Order</strong> cells mean you need to order; white means you're good.
+        </span>
+      </div>
+    </div>
+
+    <div class="table-wrapper">
+      <table id="orderingTable">
+        <thead>
+          <tr>
+            <th class="item-col">Item</th>
+            <th>Unit</th>
+            <th>Weekday Par</th>
+            <th>Weekend Par</th>
+            <th>On Hand</th>
+            <th class="col-weekday">To Order (Weekday)</th>
+            <th class="col-weekend">To Order (Weekend)</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="footer-note">
+      Type your current <strong>On Hand</strong> for each item. Needed quantities are calculated as
+      <code>max(par &minus; on&nbsp;hand, 0)</code> and then rounded <strong>up</strong> to the nearest item-specific order increment when defined.
+      Hatch Ranch, Spicy Ketchup, and Asshole sauce are forced to <strong>2 qt</strong> increments.
+      Diced Onions are ordered by the case (boxes per case), and Mini Black &amp; Whites are ordered by the number of boxes in a case.
+    </div>
+  </div>
+
+  <script>
+    // mark JS as running (hide noscript warning)
+    document.body.classList.remove("noscript-warning");
+
+    var ITEMS = [
+  {
+    "item": "Beef case(60 lbs)",
+    "unit": "lbs",
+    "weekdayPar": 50.0,
+    "weekendPar": 100.0,
+    "increment": 60.0
+  },
+  {
+    "item": "American Cheese case(4 packs, 5 lb / pack)",
+    "unit": "sleeves",
+    "weekdayPar": 6.0,
+    "weekendPar": 6.0,
+    "increment": 4.0
+  },
+  {
+    "item": "Pepperjack case(4 packs, 5 lb / pack)",
+    "unit": "sleeves",
+    "weekdayPar": 6.0,
+    "weekendPar": 6.0,
+    "increment": 4.0
+  },
+  {
+    "item": "Diced Onions case(2 bags, 5 lb / bag)",
+    "unit": "box",
+    "weekdayPar": 1.5,
+    "weekendPar": 2.0,
+    "increment": 2.0
+  },
+  {
+    "item": "Green Chiles case(5 bags, 5 lb / bag)",
+    "unit": "bags",
+    "weekdayPar": 2.0,
+    "weekendPar": 2.0,
+    "increment": 5.0
+  },
+  {
+    "item": "Jalape\u00f1os case(10 lb)",
+    "unit": "case",
+    "weekdayPar": 0.5,
+    "weekendPar": 1.0,
+    "increment": null
+  },
+  {
+    "item": "Milk case(4 jugs, 1 gal / jug)",
+    "unit": "jug",
+    "weekdayPar": 0.5,
+    "weekendPar": 0.5,
+    "increment": 4.0
+  },
+  {
+    "item": "Sour Cream Pc case(100 count)",
+    "unit": "case",
+    "weekdayPar": 0.25,
+    "weekendPar": 0.25,
+    "increment": null
+  },
+  {
+    "item": "Fries case(6 bags, 4.5 lb / bag)",
+    "unit": "bags",
+    "weekdayPar": 60.0,
+    "weekendPar": 60.0,
+    "increment": 6.0
+  },
+  {
+    "item": "Mini Black & Whites case( 10 boxes, 8 count /box)",
+    "unit": "Boxes",
+    "weekdayPar": 4.0,
+    "weekendPar": 4.0,
+    "increment": 10.0
+  },
+  {
+    "item": "Linen",
+    "unit": "bags",
+    "weekdayPar": 3.0,
+    "weekendPar": 3.0,
+    "increment": null
+  },
+  {
+    "item": "Linen bag",
+    "unit": "backup",
+    "weekdayPar": 1.0,
+    "weekendPar": 1.0,
+    "increment": null
+  },
+  {
+    "item": "Applesauce case(72 count)",
+    "unit": "case",
+    "weekdayPar": 0.25,
+    "weekendPar": 0.25,
+    "increment": null
+  },
+  {
+    "item": "Claude's case(4 jugs, 1 gal / jug)",
+    "unit": "jug",
+    "weekdayPar": 0.25,
+    "weekendPar": 1.0,
+    "increment": 4.0
+  },
+  {
+    "item": "Soy Sauce case(4 tubs, 1 gal / tub)",
+    "unit": "jug",
+    "weekdayPar": 0.25,
+    "weekendPar": 1.0,
+    "increment": null
+  },
+  {
+    "item": "Sweet Baby Ray's case(4 tubs, 1 gal / tub)",
+    "unit": "jug",
+    "weekdayPar": 1.0,
+    "weekendPar": 1.0,
+    "increment": null
+  },
+  {
+    "item": "Mayo Jugs case(4 tubs, 1 gal / tub)",
+    "unit": "tubs",
+    "weekdayPar": 4.0,
+    "weekendPar": 4.0,
+    "increment": 4.0
+  },
+  {
+    "item": "Ketchup Packets case(1000, 9GM / Pc)",
+    "unit": "case",
+    "weekdayPar": 0.25,
+    "weekendPar": 0.25,
+    "increment": null
+  },
+  {
+    "item": "Mayo Packets case(200 count)",
+    "unit": "case",
+    "weekdayPar": 0.25,
+    "weekendPar": 0.25,
+    "increment": null
+  },
+  {
+    "item": "Mustard Packets case(500 count)",
+    "unit": "case",
+    "weekdayPar": 0.25,
+    "weekendPar": 0.25,
+    "increment": null
+  },
+  {
+    "item": "Pepper Packets case(3 bags, 1000 / bag)",
+    "unit": "case",
+    "weekdayPar": 0.1,
+    "weekendPar": 0.1,
+    "increment": null
+  },
+  {
+    "item": "Salt Packets case(3 bags, 1000 / bag)",
+    "unit": "case",
+    "weekdayPar": 0.1,
+    "weekendPar": 0.1,
+    "increment": null
+  },
+  {
+    "item": "Black Pepper case(5 lb tub)",
+    "unit": "tub",
+    "weekdayPar": 0.25,
+    "weekendPar": 0.25,
+    "increment": null
+  },
+  {
+    "item": "Salt case(12 boxes, 3 lb / box)",
+    "unit": "boxes",
+    "weekdayPar": 6.0,
+    "weekendPar": 6.0,
+    "increment": 12.0
+  },
+  {
+    "item": "Pickles case(4 tubs, 1 gal / tub)",
+    "unit": "tubs",
+    "weekdayPar": 4.0,
+    "weekendPar": 4.0,
+    "increment": 4.0
+  },
+  {
+    "item": "Fried onion topper case( 6 bags/ 24 oz)",
+    "unit": "bags",
+    "weekdayPar": 4.0,
+    "weekendPar": 5.0,
+    "increment": 2.0
+  },
+  {
+    "item": "Frieds Jalps case( 10 / 1lb bag)",
+    "unit": "bags",
+    "weekdayPar": 3.0,
+    "weekendPar": 4.0,
+    "increment": null
+  },
+  {
+    "item": "Buns tray(7 bags, 12 buns / bag)",
+    "unit": "bags",
+    "weekdayPar": 60.0,
+    "weekendPar": 100.0,
+    "increment": 7.0
+  },
+  {
+    "item": "Chips case (30 count)",
+    "unit": "boxes",
+    "weekdayPar": 1.5,
+    "weekendPar": 3.0,
+    "increment": null
+  },
+  {
+    "item": "To-go Bags case(500 count)",
+    "unit": "backup",
+    "weekdayPar": 1.0,
+    "weekendPar": 1.0,
+    "increment": null
+  },
+  {
+    "item": "Clear Wrap case(1 roll)",
+    "unit": "roll",
+    "weekdayPar": 0.2,
+    "weekendPar": 0.2,
+    "increment": 1.0
+  },
+  {
+    "item": "Catering Boxes case (1 / 50 count)",
+    "unit": "boxes",
+    "weekdayPar": 20.0,
+    "weekendPar": 20.0,
+    "increment": null
+  },
+  {
+    "item": "Napkins case(12/350 sleeves)",
+    "unit": "sleeves",
+    "weekdayPar": 8.0,
+    "weekendPar": 8.0,
+    "increment": 0.03428571428571429
+  },
+  {
+    "item": "Canola Oil case (35lbs jug)",
+    "unit": "jugs",
+    "weekdayPar": 3.0,
+    "weekendPar": 3.0,
+    "increment": null
+  },
+  {
+    "item": "9x6 Boxs case(200 count)",
+    "unit": "cases",
+    "weekdayPar": 3.0,
+    "weekendPar": 3.0,
+    "increment": null
+  },
+  {
+    "item": "8x8 Boxs case(200 count)",
+    "unit": "cases",
+    "weekdayPar": 3.0,
+    "weekendPar": 3.0,
+    "increment": null
+  },
+  {
+    "item": "Big Queso Containers case(5 sleeves, 48 / sleeve)",
+    "unit": "sleeves",
+    "weekdayPar": 3.0,
+    "weekendPar": 3.0,
+    "increment": 5.0
+  },
+  {
+    "item": "32oz/8oz Deli lids",
+    "unit": "sleeves",
+    "weekdayPar": 3.0,
+    "weekendPar": 3.0,
+    "increment": null
+  },
+  {
+    "item": "Portion Cups case(10 sleeves, 250 / sleeve)",
+    "unit": "case",
+    "weekdayPar": 0.25,
+    "weekendPar": 0.25,
+    "increment": null
+  },
+  {
+    "item": "Portion Cup Lids case(20 sleeves, 125 / sleeve)",
+    "unit": "case",
+    "weekdayPar": 0.25,
+    "weekendPar": 0.25,
+    "increment": null
+  },
+  {
+    "item": "Small Queso Containers case(10 sleeves, 250 / sleeve)",
+    "unit": "sleeves",
+    "weekdayPar": 3.0,
+    "weekendPar": 3.0,
+    "increment": 10.0
+  },
+  {
+    "item": "Small Queso Lids case(10 sleeves, 100 / sleeve)",
+    "unit": "sleeves",
+    "weekdayPar": 5.0,
+    "weekendPar": 5.0,
+    "increment": 10.0
+  },
+  {
+    "item": "Water Cups case(20 sleeves, 50 count)",
+    "unit": "sleeves",
+    "weekdayPar": 8.0,
+    "weekendPar": 8.0,
+    "increment": 20.0
+  },
+  {
+    "item": "Quart Containers case(10 sleeves, 24 / sleeve)",
+    "unit": "sleeves",
+    "weekdayPar": 3.0,
+    "weekendPar": 3.0,
+    "increment": 10.0
+  },
+  {
+    "item": "Mealkits case(250 count)",
+    "unit": "case",
+    "weekdayPar": 0.25,
+    "weekendPar": 0.25,
+    "increment": null
+  },
+  {
+    "item": "Bleach case(6 tubs, 1 gal / tub)",
+    "unit": "tub",
+    "weekdayPar": 1.0,
+    "weekendPar": 1.0,
+    "increment": 6.0
+  },
+  {
+    "item": "Multisheen case(2 tubs, 1 gal / tub)",
+    "unit": "tub",
+    "weekdayPar": 1.0,
+    "weekendPar": 1.0,
+    "increment": 2.0
+  },
+  {
+    "item": "Mopsolution case(2 tubs, 1 gal / tub)",
+    "unit": "tub",
+    "weekdayPar": 1.0,
+    "weekendPar": 1.0,
+    "increment": 2.0
+  },
+  {
+    "item": "Degreaser case(2 tubs, 1 gal / tub)",
+    "unit": "tub",
+    "weekdayPar": 1.0,
+    "weekendPar": 1.0,
+    "increment": 2.0
+  },
+  {
+    "item": "Sani-Quad case(2 tubs, 1 gal / tub)",
+    "unit": "tub",
+    "weekdayPar": 1.0,
+    "weekendPar": 1.0,
+    "increment": 2.0
+  },
+  {
+    "item": "Metal Scrubbies case(12 count)",
+    "unit": "box",
+    "weekdayPar": 1.0,
+    "weekendPar": 1.0,
+    "increment": null
+  },
+  {
+    "item": "Green Scrubbies case(20 count)",
+    "unit": "box",
+    "weekdayPar": 1.0,
+    "weekendPar": 1.0,
+    "increment": null
+  },
+  {
+    "item": "Paper Towells case(6 rolls, 700ft)",
+    "unit": "roll",
+    "weekdayPar": 0.2,
+    "weekendPar": 0.2,
+    "increment": 6.0
+  },
+  {
+    "item": "Label Stickers case(1 roll)",
+    "unit": "backup",
+    "weekdayPar": 1.0,
+    "weekendPar": 1.0,
+    "increment": null
+  },
+  {
+    "item": "Register Rolls case(50 count)",
+    "unit": "rolls",
+    "weekdayPar": 9.0,
+    "weekendPar": 9.0,
+    "increment": null
+  },
+  {
+    "item": "Bricks case(12 count)",
+    "unit": "bricks",
+    "weekdayPar": 3.0,
+    "weekendPar": 3.0,
+    "increment": null
+  },
+  {
+    "item": "Trash Bags case(8 rolls, 25 / roll)",
+    "unit": "rolls",
+    "weekdayPar": 3.0,
+    "weekendPar": 3.0,
+    "increment": 8.0
+  },
+  {
+    "item": "Hand Sanitizer case(4 count)",
+    "unit": "backup",
+    "weekdayPar": 1.0,
+    "weekendPar": 1.0,
+    "increment": null
+  },
+  {
+    "item": "Hand Soap case(4 count)",
+    "unit": "backup",
+    "weekdayPar": 1.0,
+    "weekendPar": 1.0,
+    "increment": null
+  },
+  {
+    "item": "X-Large Gloves case(10 boxes, 100 / box)",
+    "unit": "boxes",
+    "weekdayPar": 4.0,
+    "weekendPar": 4.0,
+    "increment": 10.0
+  },
+  {
+    "item": "Large Gloves case(10 boxes, 100 / box)",
+    "unit": "boxes",
+    "weekdayPar": 4.0,
+    "weekendPar": 4.0,
+    "increment": 10.0
+  },
+  {
+    "item": "Medium Gloves",
+    "unit": "boxes",
+    "weekdayPar": 3.0,
+    "weekendPar": 3.0,
+    "increment": null
+  },
+  {
+    "item": "Patty Wax case(12 boxes, 500 / box)",
+    "unit": "boxes",
+    "weekdayPar": 4.0,
+    "weekendPar": 4.0,
+    "increment": 12.0
+  },
+  {
+    "item": "Water case(24 ct / .5 ltr)",
+    "unit": "cases",
+    "weekdayPar": 4.0,
+    "weekendPar": 4.0,
+    "increment": null
+  },
+  {
+    "item": "Mexican Coke case(24 ct / 12 oz)",
+    "unit": "cases",
+    "weekdayPar": 2.0,
+    "weekendPar": 3.0,
+    "increment": null
+  },
+  {
+    "item": "Mexican Sprite case( 24 ct/ 12oz)",
+    "unit": "cases",
+    "weekdayPar": 2.0,
+    "weekendPar": 2.0,
+    "increment": null
+  },
+  {
+    "item": "Topo case(24 count)",
+    "unit": "cases",
+    "weekdayPar": 2.0,
+    "weekendPar": 2.0,
+    "increment": null
+  },
+  {
+    "item": "Bacon 1/3 pan",
+    "unit": "pan",
+    "weekdayPar": 0.5,
+    "weekendPar": 0.75,
+    "increment": 0.3333333333333333
+  },
+  {
+    "item": "Queso 1 bag",
+    "unit": "queso's",
+    "weekdayPar": 3.0,
+    "weekendPar": 4.0,
+    "increment": null
+  },
+  {
+    "item": "Mini Latkes 1/2 pan",
+    "unit": "half pans",
+    "weekdayPar": 3.0,
+    "weekendPar": 5.0,
+    "increment": null
+  },
+  {
+    "item": "Hatch Chile Ranch 4 qt's",
+    "unit": "qt's",
+    "weekdayPar": 4.0,
+    "weekendPar": 7.0,
+    "increment": 2.0
+  },
+  {
+    "item": "Spicy Ketchup 6 qt\"s",
+    "unit": "qt's",
+    "weekdayPar": 12.0,
+    "weekendPar": 15.0,
+    "increment": 2.0
+  },
+  {
+    "item": "Asshole sauce 2 qt's",
+    "unit": "qt's",
+    "weekdayPar": 2.0,
+    "weekendPar": 3.0,
+    "increment": 2.0
+  },
+  {
+    "item": "Tomatillo Salsa 1 quart",
+    "unit": "qt",
+    "weekdayPar": 1.0,
+    "weekendPar": 2.0,
+    "increment": 1.0
+  },
+  {
+    "item": "schmutz camb",
+    "unit": "cambro",
+    "weekdayPar": 1.0,
+    "weekendPar": 1.0,
+    "increment": null
+  },
+  {
+    "item": "JBBBQ 6qt",
+    "unit": "bbq +",
+    "weekdayPar": 4.0,
+    "weekendPar": 2.0,
+    "increment": null
+  },
+  {
+    "item": "S&P 6 q't",
+    "unit": "",
+    "weekdayPar": 4.0,
+    "weekendPar": 2.0,
+    "increment": null
+  }
+];
+
+    function formatNumber(n) {
+      if (!isFinite(n)) return "";
+      return (Math.round(n) === n) ? String(n) : n.toFixed(2);
+    }
+
+    function applyIncrement(needed, increment) {
+      if (!increment || increment <= 0) return needed;
+      if (needed <= 0) return 0;
+      return Math.ceil(needed / increment) * increment;
+    }
+
+    function buildTable() {
+      var tbody = document.querySelector("#orderingTable tbody");
+      tbody.innerHTML = "";
+
+      for (var i = 0; i < ITEMS.length; i++) {
+        var row = ITEMS[i];
+        var tr = document.createElement("tr");
+
+        var weekdayPar = Number(row.weekdayPar || 0);
+        var weekendPar = Number(row.weekendPar || 0);
+
+        tr.innerHTML =
+          '<td class="item">' + row.item + '</td>' +
+          '<td>' + (row.unit || "") + '</td>' +
+          '<td>' + formatNumber(weekdayPar) + '</td>' +
+          '<td>' + formatNumber(weekendPar) + '</td>' +
+          '<td><input type="number" min="0" step="0.01" value="0" class="on-hand-input" data-index="' + i + '"/></td>' +
+          '<td class="to-order col-weekday" data-type="weekday">0</td>' +
+          '<td class="to-order col-weekend" data-type="weekend">0</td>';
+
+        tbody.appendChild(tr);
+      }
+    }
+
+    function recalcRow(inputEl) {
+      var rowIndex = Number(inputEl.getAttribute("data-index"));
+      var itemData = ITEMS[rowIndex];
+      var tr = inputEl.closest("tr");
+      if (!tr || !itemData) return;
+
+      var onHand = parseFloat(inputEl.value || "0") || 0;
+
+      var weekdayCell = tr.querySelector('td.to-order[data-type="weekday"]');
+      var weekendCell = tr.querySelector('td.to-order[data-type="weekend"]');
+
+      var weekdayPar = Number(itemData.weekdayPar) || 0;
+      var weekendPar = Number(itemData.weekendPar) || 0;
+      var increment = itemData.increment || null;
+
+      var weekdayNeededRaw = Math.max(weekdayPar - onHand, 0);
+      var weekendNeededRaw = Math.max(weekendPar - onHand, 0);
+
+      var weekdayNeeded = applyIncrement(weekdayNeededRaw, increment);
+      var weekendNeeded = applyIncrement(weekendNeededRaw, increment);
+
+      weekdayCell.textContent = formatNumber(weekdayNeeded);
+      weekendCell.textContent = formatNumber(weekendNeeded);
+
+      if (weekdayNeeded > 0) {
+        weekdayCell.classList.add("needed");
+      } else {
+        weekdayCell.classList.remove("needed");
+      }
+
+      if (weekendNeeded > 0) {
+        weekendCell.classList.add("needed");
+      } else {
+        weekendCell.classList.remove("needed");
+      }
+    }
+
+    function attachEvents() {
+      var tbody = document.querySelector("#orderingTable tbody");
+
+      tbody.addEventListener("input", function(e) {
+        var target = e.target;
+        if (target.classList.contains("on-hand-input")) {
+          recalcRow(target);
+        }
+      });
+
+      var searchBox = document.getElementById("searchBox");
+      searchBox.addEventListener("input", function() {
+        var query = searchBox.value.trim().toLowerCase();
+        var rows = tbody.querySelectorAll("tr");
+        Array.prototype.forEach.call(rows, function(tr) {
+          var itemText = tr.querySelector("td.item").textContent.toLowerCase();
+          tr.style.display = (!query || itemText.indexOf(query) !== -1) ? "" : "none";
+        });
+      });
+
+      var viewMode = document.getElementById("viewMode");
+      viewMode.addEventListener("change", function() {
+        var mode = viewMode.value;
+        var weekdayCols = document.querySelectorAll(".col-weekday");
+        var weekendCols = document.querySelectorAll(".col-weekend");
+
+        Array.prototype.forEach.call(weekdayCols, function(el) {
+          el.style.display = (mode === "weekend") ? "none" : "";
+        });
+        Array.prototype.forEach.call(weekendCols, function(el) {
+          el.style.display = (mode === "weekday") ? "none" : "";
+        });
+      });
+
+      document.getElementById("resetBtn").addEventListener("click", function() {
+        var inputs = tbody.querySelectorAll(".on-hand-input");
+        Array.prototype.forEach.call(inputs, function(input) {
+          input.value = "0";
+          recalcRow(input);
+        });
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+      buildTable();
+      attachEvents();
+      var inputs = document.querySelectorAll(".on-hand-input");
+      Array.prototype.forEach.call(inputs, function(input) {
+        recalcRow(input);
+      });
+    });
+  </script>
+</body>
+</html>
