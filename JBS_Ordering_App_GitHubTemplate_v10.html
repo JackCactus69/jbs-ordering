@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>JBS Ordering Guide – Interactive</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 16px;
+      color-scheme: dark;
+    }
+    body {
+      margin: 0;
+      padding: 1.25rem;
+      background: #020617;
+      color: #e5e7eb;
+    }
+    body.noscript-warning .noscript-message {
+      display: block;
+    }
+    h1 {
+      margin-top: 0;
+      font-size: 1.4rem;
+    }
+    .app {
+      max-width: 1100px;
+      margin: 0 auto;
+      background: #020617;
+      border-radius: 1rem;
+      padding: 0.9rem 1rem 1.25rem;
+      box-shadow: 0 18px 35px rgba(0,0,0,0.65);
+      border: 1px solid #1e293b;
+    }
+    .noscript-message {
+      display: none;
+      margin-bottom: 0.75rem;
+      padding: 0.65rem 0.75rem;
+      border-radius: 0.75rem;
+      border: 1px solid #f97316;
+      background: rgba(248, 113, 113, 0.08);
+      font-size: 0.8rem;
+      color: #fed7aa;
+    }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+    .controls label {
+      font-size: 0.85rem;
+      color: #9ca3af;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    .controls input[type="search"] {
+      padding: 0.35rem 0.6rem;
+      border-radius: 999px;
+      border: 1px solid #1f2933;
+      background: #020617;
+      color: inherit;
+      min-width: 140px;
+      font-size: 0.85rem;
+    }
+    .controls select {
+      padding: 0.3rem 0.6rem;
+      border-radius: 999px;
+      border: 1px solid #1f2933;
+      background: #020617;
+      color: inherit;
+      font-size: 0.85rem;
+    }
+    .controls-main {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+      flex: 1 1 auto;
+    }
+    .controls-extra {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      margin-left: auto;
+      text-align: right;
+    }
+    .table-wrapper {
+      max-height: 70vh;
+      overflow-y: auto;
+      overflow-x: auto;
+      border-radius: 0.75rem;
+      border: 1px solid #1f2937;
+      background: radial-gradient(circle at top, #020617, #020617);
+      -webkit-overflow-scrolling: touch;
+    }
+    table {
+      width: 100%;
+      min-width: 640px;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+    }
+    thead {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background: #020617;
+    }
+    th, td {
+      padding: 0.35rem 0.45rem;
+      text-align: left;
+      border-bottom: 1px solid #111827;
+      white-space: nowrap;
+    }
+    th {
+      font-weight: 600;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #9ca3af;
+    }
+    th.item-col {
+      position: sticky;
+      left: 0;
+      z-index: 3;
+      background: #020617;
+    }
+    td.item {
+      white-space: normal;
+      max-width: 260px;
+      position: sticky;
+      left: 0;
+      z-index: 2;
+      background: #020617;
+    }
+    tr:nth-child(even) td:not(.item) {
+      background: rgba(15,23,42,0.75);
+    }
+    tr:nth-child(odd) td:not(.item) {
+      background: rgba(15,23,42,0.5);
+    }
+
+    /* Smaller Unit column */
+    th.unit-col {
+      width: 4rem;
+      max-width: 4rem;
+      text-align: center;
+    }
+    td.unit {
+      width: 4rem;
+      max-width: 4rem;
+      font-size: 0.72rem;
+      text-align: center;
+    }
+
+    /* Light green highlight for To Order cells */
+    td.col-weekday,
+    td.col-weekend {
+      background: #065f46;
+    }
+
+    /* Neutral background for Par cells */
+    td.col-weekday-par,
+    td.col-weekend-par {
+      background: rgba(15,23,42,0.85);
+    }
+
+    /* Inputs inside To Order cells */
+    input.to-order-input {
+      width: 4.2rem;
+      padding: 0.3rem 0.35rem;
+      border-radius: 0.5rem;
+      border: 1px solid #4ade80;
+      background: #065f46;
+      color: inherit;
+      font-size: 0.8rem;
+      text-align: right;
+    }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.1rem 0.45rem;
+      border-radius: 999px;
+      background: rgba(55,65,81,0.7);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #e5e7eb;
+      white-space: nowrap;
+    }
+    .actions-footer {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+    .actions-footer button {
+      padding: 0.35rem 0.7rem;
+      border-radius: 999px;
+      border: 1px solid #374151;
+      background: #111827;
+      color: inherit;
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
+    .actions-footer button:hover {
+      background: #1f2937;
+    }
+    .footer-note {
+      margin-top: 0.5rem;
+      font-size: 0.75rem;
+      color: #6b7280;
+    }
+    .hint {
+      font-size: 0.72rem;
+      color: #9ca3af;
+    }
+    .hint strong {
+      color: #bbf7d0;
+    }
+    .note-section {
+      margin-bottom: 0.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+    .note-section label {
+      font-size: 0.8rem;
+      color: #9ca3af;
+    }
+    #shiftNote {
+      width: 100%;
+      min-height: 3rem;
+      max-height: 8rem;
+      padding: 0.4rem 0.5rem;
+      border-radius: 0.5rem;
+      border: 1px solid #1f2937;
+      background: #020617;
+      color: inherit;
+      font-size: 0.8rem;
+      resize: vertical;
+    }
+
+
+    @media (max-width: 900px) and (orientation: landscape) {
+      body {
+        padding: 0.5rem;
+      }
+      .app {
+        padding: 0.6rem 0.6rem 0.75rem;
+        border-radius: 0.75rem;
+      }
+      table {
+        min-width: 520px;
+        font-size: 0.8rem;
+      }
+      th, td {
+        padding: 0.25rem 0.3rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 0.6rem;
+      }
+      .app {
+        padding: 0.75rem 0.75rem 1rem;
+        border-radius: 0.75rem;
+      }
+      h1 {
+        font-size: 1.2rem;
+      }
+      .controls {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .controls-main {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .controls label {
+        justify-content: space-between;
+      }
+      .controls input[type="search"],
+      .controls select {
+        width: 100%;
+      }
+      .controls-extra {
+        width: 100%;
+        text-align: left;
+        margin-left: 0;
+      }
+      table {
+        min-width: 520px;
+        font-size: 0.78rem;
+      }
+      th, td {
+        padding: 0.3rem 0.35rem;
+      }
+      .footer-note {
+        font-size: 0.7rem;
+      }
+      .actions-footer {
+        position: sticky;
+        bottom: 0;
+        padding-top: 0.4rem;
+        background: linear-gradient(to top, #020617 80%, rgba(2,6,23,0));
+      }
+    }
+
+    @media (max-width: 480px) {
+      table {
+        min-width: 460px;
+      }
+      input.to-order-input {
+        width: 3.4rem;
+      }
+    }
+  </style>
+</head>
+<body class="noscript-warning">
+  <div class="app">
+    <h1>JBS Nightly Ordering Guide</h1>
+    <div class="noscript-message">
+      This viewer isn&apos;t running the interactive part of this file (JavaScript is disabled).  
+      To use the ordering calculator, either tap the <strong>share</strong> icon and open this file in Safari,
+      or tap <a href=&quot;https://YOUR_GITHUB_USERNAME.github.io/jbs-ordering/&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;><strong>Open interactive version</strong></a> after you&apos;ve set up GitHub Pages for it.
+    </div>
+    <div class="controls">
+      <div class="controls-main">
+        <span class="tag">Mobile-ready</span>
+        <label>
+          <span>Search:</span>
+          <input type="search" id="searchBox" placeholder="Filter items…" />
+        </label>
+        <label>
+          <span>View:</span>
+          <select id="viewMode">
+            <option value="both">Weekday &amp; Weekend</option>
+            <option value="weekday">Weekday only</option>
+            <option value="weekend">Weekend only</option>
+          </select>
+        </label>
+      </div>
+      <div class="controls-extra">
+        <span class="hint">
+          Fill in the <strong>To Order</strong> quantities. We&apos;ll snap them up to the correct increment (case, box, 2 qt, etc.).
+        </span>
+        <span class="hint">
+          Your entries are saved <strong>locally on this device</strong> so you can export them later for on-hand estimates.
+        </span>
+        <span class="hint" id="savedInfo">
+          Saved sheets on this device: 0
+        </span>
+      </div>
+    </div>
+
+    <div class="note-section">
+      <label for="shiftNote">Notes for next person:</label>
+      <textarea id="shiftNote" rows="2" placeholder="Notes for next shift, 86s, issues, etc."></textarea>
+    </div>
+
+    <div class="table-wrapper">
+      <table id="orderingTable">
+        <thead>
+          <tr>
+            <th class="item-col">Item</th>
+            <th class="unit-col">Unit</th>
+            <th class="col-weekday">To Order (Weekday)</th>
+            <th class="col-weekday-par">Weekday Par</th>
+            <th class="col-weekend">To Order (Weekend)</th>
+            <th class="col-weekend-par">Weekend Par</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <div class="actions-footer">
+      <button type="button" id="saveBtn">Save Sheet (this view)</button>
+      <button type="button" id="resetBtn">Reset</button>
+      <button type="button" id="exportBtn">Export History (HTML)</button>
+    </div>
+
+    <div class="footer-note">
+      Enter how much you plan to <strong>order</strong> for each item.  
+      We enforce each item&apos;s order increment (including 2 qt rules and case counts) and store each saved sheet in local storage.  
+      When you export history, you&apos;ll get a formatted sheet you can open in Excel or Google Sheets for further formatting.
+    </div>
+  </div>
+
+  <script>
+    // mark JS as running (hide noscript warning)
+    document.body.classList.remove("noscript-warning");
+
+    var ITEMS = [
+  {
+    "item": "Beef case(60 lbs)",
+    "unit": "case",
+    "weekdayPar": 1.0,
+    "weekendPar": 2.0,
+    "increment": 1.0
+  },
+  {
+    "item": "American Cheese case(4 packs, 5 lb / pack)",
+    "unit": "case",
+    "weekdayPar": 1.5,
+    "weekendPar": 1.5,
+    "increment": 1.0
+  },
+  {
+    "item": "Pepperjack case(4 packs, 5 lb / pack)",
+    "unit": "case",
+    "weekdayPar": 1.5,
+    "weekendPar": 1.5,
+    "increment": 1.0
+  },
+  {
+    "item": "Diced Onions case(2 bags, 5 lb / bag)",
+    "unit": "box",
+    "weekdayPar": 1.5,
+    "weekendPar": 2.0,
+    "increment": 2.0
+  },
+  {
+    "item": "Green Chiles case(5 bags, 5 lb / bag)",
+    "unit": "bags",
+    "weekdayPar": 2.0,
+    "weekendPar": 2.0,
+    "increment": 5.0
+  },
+  {
+    "item": "Jalape\u00f1os case(10 lb)",
+    "unit": "case",
+    "weekdayPar": 0.5,
+    "weekendPar": 1.0,
+    "increment": null
+  },
+  {
+    "item": "Milk case(4 jugs, 1 gal / jug)",
+    "unit": "jug",
+    "weekdayPar": 0.5,
+    "weekendPar": 0.5,
+    "increment": 4.0
+  },
+  {
+    "item": "Sour Cream Pc case(100 count)",
+    "unit": "case",
+    "weekdayPar": 0.25,
+    "weekendPar": 0.25,
+    "increment": null
+  },
+  {
+    "item": "Fries case(6 bags, 4.5 lb / bag)",
+    "unit": "bags",
+    "weekdayPar": 60.0,
+    "weekendPar": 60.0,
+    "increment": 6.0
+  },
+  {
+    "item": "Mini Black & Whites case( 10 boxes, 8 count /box)",
+    "unit": "Boxes",
+    "weekdayPar": 4.0,
+    "weekendPar": 4.0,
+    "increment": 10.0
+  },
+  {
+    "item": "Linen",
+    "unit": "bags",
+    "weekdayPar": 3.0,
+    "weekendPar": 3.0,
+    "increment": null
+  },
+  {
+    "item": "Linen bag",
+    "unit": "backup",
+    "weekdayPar": 1.0,
+    "weekendPar": 1.0,
+    "increment": null
+  },
+  {
+    "item": "Applesauce case(72 count)",
+    "unit": "case",
+    "weekdayPar": 0.25,
+    "weekendPar": 0.25,
+    "increment": null
+  },
+  {
+    "item": "Claude's case(4 jugs, 1 gal / jug)",
+    "unit": "jug",
+    "weekdayPar": 0.25,
+    "weekendPar": 1.0,
+    "increment": 4.0
+  },
+  {
+    "item": "Soy Sauce case(4 tubs, 1 gal / tub)",
+    "unit": "jug",
+    "weekdayPar": 0.25,
+    "weekendPar": 1.0,
+    "increment": null
+  },
+  {
+    "item": "Sweet Baby Ray's case(4 tubs, 1 gal / tub)",
+    "unit": "jug",
+    "weekdayPar": 1.0,
+    "weekendPar": 1.0,
+    "increment": null
+  },
+  {
+    "item": "Mayo Jugs case(4 tubs, 1 gal / tub)",
+    "unit": "tubs",
+    "weekdayPar": 4.0,
+    "weekendPar": 4.0,
+    "increment": 4.0
+  },
+  {
+    "item": "Ketchup Packets case(1000, 9GM / Pc)",
+    "unit": "case",
+    "weekdayPar": 0.25,
+    "weekendPar": 0.25,
+    "increment": null
+  },
+  {
+    "item": "Mayo Packets case(200 count)",
+    "unit": "case",
+    "weekdayPar": 0.25,
+    "weekendPar": 0.25,
+    "increment": null
+  },
+  {
+    "item": "Mustard Packets case(500 count)",
+    "unit": "case",
+    "weekdayPar": 0.25,
+    "weekendPar": 0.25,
+    "increment": null
+  },
+  {
+    "item": "Pepper Packets case(3 bags, 1000 / bag)",
+    "unit": "case",
+    "weekdayPar": 0.1,
+    "weekendPar": 0.1,
+    "increment": null
+  },
+  {
+    "item": "Salt Packets case(3 bags, 1000 / bag)",
+    "unit": "case",
+    "weekdayPar": 0.1,
+    "weekendPar": 0.1,
+    "increment": null
+  },
+  {
+    "item": "Black Pepper case(5 lb tub)",
+    "unit": "tub",
+    "weekdayPar": 0.25,
+    "weekendPar": 0.25,
+    "increment": null
+  },
+  {
+    "item": "Salt case(12 boxes, 3 lb / box)",
+    "unit": "boxes",
+    "weekdayPar": 6.0,
+    "weekendPar": 6.0,
+    "increment": 12.0
+  },
+  {
+    "item": "Pickles case(4 tubs, 1 gal / tub)",
+    "unit": "tubs",
+    "weekdayPar": 4.0,
+    "weekendPar": 4.0,
+    "increment": 4.0
+  },
+  {
+    "item": "Fried onion topper case( 6 bags/ 24 oz)",
+    "unit": "bags",
+    "weekdayPar": 4.0,
+    "weekendPar": 5.0,
+    "increment": 2.0
+  },
+  {
+    "item": "Frieds Jalps case( 10 / 1lb bag)",
+    "unit": "bags",
+    "weekdayPar": 3.0,
+    "weekendPar": 4.0,
+    "increment": null
+  },
+  {
+    "item": "Buns tray(7 bags, 12 buns / bag)",
+    "unit": "tray",
+    "weekdayPar": 8.571428571428571,
+    "weekendPar": 14.285714285714286,
+    "increment": 1.0
+  },
+  {
+    "item": "Chips case (30 count)",
+    "unit": "box",
+    "weekdayPar": 1.5,
+    "weekendPar": 3.0,
+    "increment": 1.0
+  },
+  {
+    "item": "To-go Bags case(500 count)",
+    "unit": "backup",
+    "weekdayPar": 1.0,
+    "weekendPar": 1.0,
+    "increment": null
+  },
+  {
+    "item": "Clear Wrap case(1 roll)",
+    "unit": "roll",
+    "weekdayPar": 0.2,
+    "weekendPar": 0.2,
+    "increment": 1.0
+  },
+  {
+    "item": "Catering Boxes case (1 / 50 count)",
+    "unit": "boxes",
+    "weekdayPar": 20.0,
+    "weekendPar": 20.0,
+    "increment": null
+  },
+  {
+    "item": "Napkins case(12/350 sleeves)",
+    "unit": "sleeves",
+    "weekdayPar": 8.0,
+    "weekendPar": 8.0,
+    "increment": 0.03428571428571429
+  },
+  {
+    "item": "Canola Oil case (35lbs jug)",
+    "unit": "jugs",
+    "weekdayPar": 3.0,
+    "weekendPar": 3.0,
+    "increment": null
+  },
+  {
+    "item": "9x6 Boxs case(200 count)",
+    "unit": "cases",
+    "weekdayPar": 3.0,
+    "weekendPar": 3.0,
+    "increment": null
+  },
+  {
+    "item": "8x8 Boxs case(200 count)",
+    "unit": "cases",
+    "weekdayPar": 3.0,
+    "weekendPar": 3.0,
+    "increment": null
+  },
+  {
+    "item": "Big Queso Containers case(5 sleeves, 48 / sleeve)",
+    "unit": "sleeves",
+    "weekdayPar": 3.0,
+    "weekendPar": 3.0,
+    "increment": 5.0
+  },
+  {
+    "item": "32oz/8oz Deli lids",
+    "unit": "sleeves",
+    "weekdayPar": 3.0,
+    "weekendPar": 3.0,
+    "increment": null
+  },
+  {
+    "item": "Portion Cups case(10 sleeves, 250 / sleeve)",
+    "unit": "case",
+    "weekdayPar": 0.25,
+    "weekendPar": 0.25,
+    "increment": null
+  },
+  {
+    "item": "Portion Cup Lids case(20 sleeves, 125 / sleeve)",
+    "unit": "case",
+    "weekdayPar": 0.25,
+    "weekendPar": 0.25,
+    "increment": null
+  },
+  {
+    "item": "Small Queso Containers case(10 sleeves, 250 / sleeve)",
+    "unit": "sleeves",
+    "weekdayPar": 3.0,
+    "weekendPar": 3.0,
+    "increment": 10.0
+  },
+  {
+    "item": "Small Queso Lids case(10 sleeves, 100 / sleeve)",
+    "unit": "sleeves",
+    "weekdayPar": 5.0,
+    "weekendPar": 5.0,
+    "increment": 10.0
+  },
+  {
+    "item": "Water Cups case(20 sleeves, 50 count)",
+    "unit": "sleeves",
+    "weekdayPar": 8.0,
+    "weekendPar": 8.0,
+    "increment": 20.0
+  },
+  {
+    "item": "Quart Containers case(10 sleeves, 24 / sleeve)",
+    "unit": "sleeves",
+    "weekdayPar": 3.0,
+    "weekendPar": 3.0,
+    "increment": 10.0
+  },
+  {
+    "item": "Mealkits case(250 count)",
+    "unit": "case",
+    "weekdayPar": 0.25,
+    "weekendPar": 0.25,
+    "increment": null
+  },
+  {
+    "item": "Bleach case(6 tubs, 1 gal / tub)",
+    "unit": "tub",
+    "weekdayPar": 1.0,
+    "weekendPar": 1.0,
+    "increment": 6.0
+  },
+  {
+    "item": "Multisheen case(2 tubs, 1 gal / tub)",
+    "unit": "tub",
+    "weekdayPar": 1.0,
+    "weekendPar": 1.0,
+    "increment": 2.0
+  },
+  {
+    "item": "Mopsolution case(2 tubs, 1 gal / tub)",
+    "unit": "tub",
+    "weekdayPar": 1.0,
+    "weekendPar": 1.0,
+    "increment": 2.0
+  },
+  {
+    "item": "Degreaser case(2 tubs, 1 gal / tub)",
+    "unit": "tub",
+    "weekdayPar": 1.0,
+    "weekendPar": 1.0,
+    "increment": 2.0
+  },
+  {
+    "item": "Sani-Quad case(2 tubs, 1 gal / tub)",
+    "unit": "tub",
+    "weekdayPar": 1.0,
+    "weekendPar": 1.0,
+    "increment": 2.0
+  },
+  {
+    "item": "Metal Scrubbies case(12 count)",
+    "unit": "box",
+    "weekdayPar": 1.0,
+    "weekendPar": 1.0,
+    "increment": null
+  },
+  {
+    "item": "Green Scrubbies case(20 count)",
+    "unit": "box",
+    "weekdayPar": 1.0,
+    "weekendPar": 1.0,
+    "increment": null
+  },
+  {
+    "item": "Paper Towells case(6 rolls, 700ft)",
+    "unit": "roll",
+    "weekdayPar": 0.2,
+    "weekendPar": 0.2,
+    "increment": 6.0
+  },
+  {
+    "item": "Label Stickers case(1 roll)",
+    "unit": "backup",
+    "weekdayPar": 1.0,
+    "weekendPar": 1.0,
+    "increment": null
+  },
+  {
+    "item": "Register Rolls case(50 count)",
+    "unit": "rolls",
+    "weekdayPar": 9.0,
+    "weekendPar": 9.0,
+    "increment": null
+  },
+  {
+    "item": "Bricks case(12 count)",
+    "unit": "bricks",
+    "weekdayPar": 3.0,
+    "weekendPar": 3.0,
+    "increment": null
+  },
+  {
+    "item": "Trash Bags case(8 rolls, 25 / roll)",
+    "unit": "case",
+    "weekdayPar": 0.375,
+    "weekendPar": 0.375,
+    "increment": 1.0
+  },
+  {
+    "item": "Hand Sanitizer case(4 count)",
+    "unit": "backup",
+    "weekdayPar": 1.0,
+    "weekendPar": 1.0,
+    "increment": null
+  },
+  {
+    "item": "Hand Soap case(4 count)",
+    "unit": "backup",
+    "weekdayPar": 1.0,
+    "weekendPar": 1.0,
+    "increment": null
+  },
+  {
+    "item": "X-Large Gloves case(10 boxes, 100 / box)",
+    "unit": "case",
+    "weekdayPar": 0.4,
+    "weekendPar": 0.4,
+    "increment": 1.0
+  },
+  {
+    "item": "Large Gloves case(10 boxes, 100 / box)",
+    "unit": "case",
+    "weekdayPar": 0.4,
+    "weekendPar": 0.4,
+    "increment": 1.0
+  },
+  {
+    "item": "Medium Gloves",
+    "unit": "case",
+    "weekdayPar": 0.3,
+    "weekendPar": 0.3,
+    "increment": 1.0
+  },
+  {
+    "item": "Patty Wax case(12 boxes, 500 / box)",
+    "unit": "case",
+    "weekdayPar": 0.3333333333333333,
+    "weekendPar": 0.3333333333333333,
+    "increment": 1.0
+  },
+  {
+    "item": "Water case(24 ct / .5 ltr)",
+    "unit": "cases",
+    "weekdayPar": 4.0,
+    "weekendPar": 4.0,
+    "increment": null
+  },
+  {
+    "item": "Mexican Coke case(24 ct / 12 oz)",
+    "unit": "cases",
+    "weekdayPar": 2.0,
+    "weekendPar": 3.0,
+    "increment": null
+  },
+  {
+    "item": "Mexican Sprite case( 24 ct/ 12oz)",
+    "unit": "cases",
+    "weekdayPar": 2.0,
+    "weekendPar": 2.0,
+    "increment": null
+  },
+  {
+    "item": "Topo case(24 count)",
+    "unit": "cases",
+    "weekdayPar": 2.0,
+    "weekendPar": 2.0,
+    "increment": null
+  },
+  {
+    "item": "Bacon 1/3 pan",
+    "unit": "pan",
+    "weekdayPar": 0.5,
+    "weekendPar": 0.75,
+    "increment": 0.3333333333333333
+  },
+  {
+    "item": "Queso 1 bag",
+    "unit": "queso's",
+    "weekdayPar": 3.0,
+    "weekendPar": 4.0,
+    "increment": null
+  },
+  {
+    "item": "Mini Latkes 1/2 pan",
+    "unit": "half pans",
+    "weekdayPar": 3.0,
+    "weekendPar": 5.0,
+    "increment": null
+  },
+  {
+    "item": "Hatch Chile Ranch 4 qt's",
+    "unit": "qt's",
+    "weekdayPar": 4.0,
+    "weekendPar": 7.0,
+    "increment": 2.0
+  },
+  {
+    "item": "Spicy Ketchup 6 qt\"s",
+    "unit": "qt's",
+    "weekdayPar": 12.0,
+    "weekendPar": 15.0,
+    "increment": 2.0
+  },
+  {
+    "item": "Asshole sauce 2 qt's",
+    "unit": "qt's",
+    "weekdayPar": 2.0,
+    "weekendPar": 3.0,
+    "increment": 2.0
+  },
+  {
+    "item": "Tomatillo Salsa 1 quart",
+    "unit": "qt",
+    "weekdayPar": 1.0,
+    "weekendPar": 2.0,
+    "increment": 1.0
+  }
+];
+    var STORAGE_KEY = "jbs_order_history_v2";
+
+    function formatNumber(n) {
+      if (!isFinite(n)) return "";
+      return (Math.round(n * 100) === Math.round(n) * 100) ? String(n) : n.toFixed(2);
+    }
+
+    function applyIncrement(qty, increment) {
+      if (!increment || increment <= 0) return qty;
+      if (qty <= 0) return 0;
+      return Math.ceil(qty / increment) * increment;
+    }
+
+    function buildTable() {
+      var tbody = document.querySelector("#orderingTable tbody");
+      tbody.innerHTML = "";
+
+      for (var i = 0; i < ITEMS.length; i++) {
+        var row = ITEMS[i];
+        var tr = document.createElement("tr");
+
+        var weekdayPar = Number(row.weekdayPar || 0);
+        var weekendPar = Number(row.weekendPar || 0);
+
+        tr.innerHTML =
+          '<td class="item">' + row.item + '</td>' +
+          '<td class="unit">' + (row.unit || "") + '</td>' +
+          '<td class="col-weekday"><input type="number" min="0" step="0.01" class="to-order-input" data-index="' + i + '" data-type="weekday" /></td>' +
+          '<td class="col-weekday-par">' + formatNumber(weekdayPar) + '</td>' +
+          '<td class="col-weekend"><input type="number" min="0" step="0.01" class="to-order-input" data-index="' + i + '" data-type="weekend" /></td>' +
+          '<td class="col-weekend-par">' + formatNumber(weekendPar) + '</td>';
+
+        tbody.appendChild(tr);
+      }
+    }
+
+    function loadHistory() {
+      try {
+        var raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return [];
+        var parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed)) return [];
+        return parsed;
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function updateSavedInfo() {
+      var history = loadHistory();
+      var el = document.getElementById("savedInfo");
+      if (el) {
+        el.textContent = "Saved sheets on this device: " + history.length;
+      }
+    }
+
+    function saveCurrentSheet() {
+      var tbody = document.querySelector("#orderingTable tbody");
+      var rows = tbody.querySelectorAll("tr");
+      var history = loadHistory();
+      var entries = [];
+      var modeSelect = document.getElementById("viewMode");
+      var mode = modeSelect ? modeSelect.value : "both";
+
+      var noteEl = document.getElementById("shiftNote");
+      var note = noteEl ? noteEl.value : "";
+
+      Array.prototype.forEach.call(rows, function(tr) {
+        var weekdayInput = tr.querySelector('input.to-order-input[data-type="weekday"]');
+        var weekendInput = tr.querySelector('input.to-order-input[data-type="weekend"]');
+        if (!weekdayInput && !weekendInput) return;
+
+        var index = weekdayInput ? Number(weekdayInput.getAttribute("data-index")) :
+                    weekendInput ? Number(weekendInput.getAttribute("data-index")) : -1;
+        if (index < 0 || index >= ITEMS.length) return;
+        var item = ITEMS[index];
+
+        var weekdayPar = Number(item.weekdayPar) || 0;
+        var weekendPar = Number(item.weekendPar) || 0;
+
+        var weekdayOrder = null;
+        var weekendOrder = null;
+        var estWeekdayOnHand = null;
+        var estWeekendOnHand = null;
+
+        if (mode === "weekday" || mode === "both") {
+          var wVal = weekdayInput ? (parseFloat(weekdayInput.value || "0") || 0) : 0;
+          weekdayOrder = wVal;
+          estWeekdayOnHand = Math.max(weekdayPar - wVal, 0);
+        }
+
+        if (mode === "weekend" || mode === "both") {
+          var weVal = weekendInput ? (parseFloat(weekendInput.value || "0") || 0) : 0;
+          weekendOrder = weVal;
+          estWeekendOnHand = Math.max(weekendPar - weVal, 0);
+        }
+
+        entries.push({
+          item: item.item,
+          unit: item.unit,
+          weekdayPar: weekdayPar,
+          weekendPar: weekendPar,
+          weekdayOrder: weekdayOrder,
+          weekendOrder: weekendOrder,
+          estWeekdayOnHand: estWeekdayOnHand,
+          estWeekendOnHand: estWeekendOnHand
+        });
+      });
+
+      history.push({
+        timestamp: new Date().toISOString(),
+        viewMode: mode,
+        note: note,
+        entries: entries
+      });
+
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+        updateSavedInfo();
+        alert("Saved " + entries.length + " items locally on this device for view: " + mode + ".");
+      } catch (e) {
+        alert("Could not save locally (storage may be full or disabled).");
+      }
+    }
+
+    et.");
+        return;
+      }
+
+      var modeSelect = document.getElementById("viewMode");
+      var mode = modeSelect ? modeSelect.value : "both";
+
+      var lines = [];
+      if (mode === "weekday") {
+        lines.push(["timestamp","item","unit","weekdayPar","weekdayOrder","estWeekdayOnHand"].join(","));
+      } else if (mode === "weekend") {
+        lines.push(["timestamp","item","unit","weekendPar","weekendOrder","estWeekendOnHand"].join(","));
+      } else {
+        lines.push([
+          "timestamp",
+          "item",
+          "unit",
+          "weekdayPar",
+          "weekdayOrder",
+          "estWeekdayOnHand",
+          "weekendPar",
+          "weekendOrder",
+          "estWeekendOnHand"
+        ].join(","));
+      }
+
+      history.forEach(function(sheet) {
+        if (mode !== "both" && sheet.viewMode && sheet.viewMode !== mode) {
+          return;
+        }
+        var ts = sheet.timestamp || "";
+        (sheet.entries || []).forEach(function(entry) {
+          function esc(v) {
+            var s = (v == null ? "" : String(v));
+            if (s.indexOf(",") !== -1 || s.indexOf('"') !== -1) {
+              s = '"' + s.replace(/"/g, '""') + '"';
+            }
+            return s;
+          }
+
+          if (mode === "weekday") {
+            lines.push([
+              esc(ts),
+              esc(entry.item),
+              esc(entry.unit),
+              esc(entry.weekdayPar),
+              esc(entry.weekdayOrder),
+              esc(entry.estWeekdayOnHand)
+            ].join(","));
+          } else if (mode === "weekend") {
+            lines.push([
+              esc(ts),
+              esc(entry.item),
+              esc(entry.unit),
+              esc(entry.weekendPar),
+              esc(entry.weekendOrder),
+              esc(entry.estWeekendOnHand)
+            ].join(","));
+          } else {
+            lines.push([
+              esc(ts),
+              esc(entry.item),
+              esc(entry.unit),
+              esc(entry.weekdayPar),
+              esc(entry.weekdayOrder),
+              esc(entry.estWeekdayOnHand),
+              esc(entry.weekendPar),
+              esc(entry.weekendOrder),
+              esc(entry.estWeekendOnHand)
+            ].join(","));
+          }
+        });
+      });
+
+      var blob = new Blob([lines.join("\n")], { type: "text/csv" });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement("a");
+      a.href = url;
+      a.download = "jbs_order_history_" + mode + ".csv";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    function attachEvents() {
+      var tbody = document.querySelector("#orderingTable tbody");
+
+      tbody.addEventListener("change", function(e) {
+        var target = e.target;
+        if (target.classList.contains("to-order-input")) {
+          var index = Number(target.getAttribute("data-index"));
+          var item = ITEMS[index];
+          if (!item) return;
+          var increment = item.increment || null;
+          var raw = parseFloat(target.value || "0") || 0;
+          var adjusted = applyIncrement(raw, increment);
+          target.value = adjusted ? formatNumber(adjusted) : "";
+        }
+      });
+
+      var searchBox = document.getElementById("searchBox");
+      searchBox.addEventListener("input", function() {
+        var query = searchBox.value.trim().toLowerCase();
+        var rows = tbody.querySelectorAll("tr");
+        Array.prototype.forEach.call(rows, function(tr) {
+          var itemText = tr.querySelector("td.item").textContent.toLowerCase();
+          tr.style.display = (!query || itemText.indexOf(query) !== -1) ? "" : "none";
+        });
+      });
+
+      var viewMode = document.getElementById("viewMode");
+      viewMode.addEventListener("change", function() {
+        var mode = viewMode.value;
+        var weekdayCols = document.querySelectorAll(".col-weekday, .col-weekday-par");
+        var weekendCols = document.querySelectorAll(".col-weekend, .col-weekend-par");
+
+        Array.prototype.forEach.call(weekdayCols, function(el) {
+          el.style.display = (mode === "weekend") ? "none" : "";
+        });
+        Array.prototype.forEach.call(weekendCols, function(el) {
+          el.style.display = (mode === "weekday") ? "none" : "";
+        });
+      });
+
+      document.getElementById("resetBtn").addEventListener("click", function() {
+        var inputs = tbody.querySelectorAll(".to-order-input");
+        Array.prototype.forEach.call(inputs, function(input) {
+          input.value = "";
+        });
+      });
+
+      document.getElementById("saveBtn").addEventListener("click", function() {
+        saveCurrentSheet();
+      });
+
+      document.getElementById("exportBtn").addEventListener("click", function() {
+        exportHistory();
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+      buildTable();
+      attachEvents();
+      updateSavedInfo();
+    });
+  </script>
+</body>
+</html>
+    function exportHistory() {
+      var history = loadHistory();
+      if (!history.length) {
+        alert("No saved sheets yet.");
+        return;
+      }
+
+      var modeSelect = document.getElementById("viewMode");
+      var mode = modeSelect ? modeSelect.value : "both";
+
+      var parts = [];
+      parts.push('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>JBS Order History</title>');
+      parts.push('<style>');
+      parts.push('body { font-family: system-ui, -apple-system, BlinkMacSystemFont, \\"Segoe UI\\", sans-serif; background: #0f172a; color: #e5e7eb; margin: 0; padding: 1rem; }');
+      parts.push('h1 { font-size: 1.4rem; margin-bottom: 0.5rem; }');
+      parts.push('h2 { font-size: 1rem; margin-top: 1.5rem; margin-bottom: 0.25rem; }');
+      parts.push('p { font-size: 0.85rem; }');
+      parts.push('table { border-collapse: collapse; width: 100%; margin-top: 0.5rem; font-size: 0.8rem; }');
+      parts.push('th, td { border: 1px solid #1f2937; padding: 0.3rem 0.4rem; text-align: left; }');
+      parts.push('th { background: #020617; color: #e5e7eb; text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.7rem; }');
+      parts.push('td.to-order { background: #064e3b; }');
+      parts.push('tr:nth-child(even) td { background: #020617; }');
+      parts.push('tr:nth-child(odd) td { background: #020314; }');
+      parts.push('</style></head><body>');
+      parts.push('<h1>JBS Order History (' + mode + ' view)</h1>');
+
+      history.forEach(function(sheet, idx) {
+        if (mode !== "both" && sheet.viewMode && sheet.viewMode !== mode) {
+          return;
+        }
+        var ts = sheet.timestamp || "";
+        var note = sheet.note || "";
+        parts.push('<h2>Sheet ' + (idx + 1) + ' — ' + ts + '</h2>');
+        if (note) {
+          parts.push('<p><strong>Note:</strong> ' + String(note).replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</p>');
+        } else {
+          parts.push('<p><strong>Note:</strong> (none)</p>');
+        }
+
+        parts.push('<table><thead><tr>');
+        if (mode === "weekday") {
+          parts.push('<th>Item</th><th>Unit</th><th>Weekday Par</th><th>To Order (Weekday)</th><th>Est On Hand (Weekday)</th>');
+        } else if (mode === "weekend") {
+          parts.push('<th>Item</th><th>Unit</th><th>Weekend Par</th><th>To Order (Weekend)</th><th>Est On Hand (Weekend)</th>');
+        } else {
+          parts.push('<th>Item</th><th>Unit</th>');
+          parts.push('<th>Weekday Par</th><th>To Order (Weekday)</th><th>Est On Hand (Weekday)</th>');
+          parts.push('<th>Weekend Par</th><th>To Order (Weekend)</th><th>Est On Hand (Weekend)</th>');
+        }
+        parts.push('</tr></thead><tbody>');
+
+        (sheet.entries || []).forEach(function(entry) {
+          function esc(v) {
+            var s = (v == null ? "" : String(v));
+            return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+          }
+          parts.push('<tr>');
+          if (mode === "weekday") {
+            parts.push('<td>' + esc(entry.item) + '</td>');
+            parts.push('<td>' + esc(entry.unit) + '</td>');
+            parts.push('<td>' + esc(entry.weekdayPar) + '</td>');
+            parts.push('<td class="to-order">' + esc(entry.weekdayOrder) + '</td>');
+            parts.push('<td>' + esc(entry.estWeekdayOnHand) + '</td>');
+          } else if (mode === "weekend") {
+            parts.push('<td>' + esc(entry.item) + '</td>');
+            parts.push('<td>' + esc(entry.unit) + '</td>');
+            parts.push('<td>' + esc(entry.weekendPar) + '</td>');
+            parts.push('<td class="to-order">' + esc(entry.weekendOrder) + '</td>');
+            parts.push('<td>' + esc(entry.estWeekendOnHand) + '</td>');
+          } else {
+            parts.push('<td>' + esc(entry.item) + '</td>');
+            parts.push('<td>' + esc(entry.unit) + '</td>');
+            parts.push('<td>' + esc(entry.weekdayPar) + '</td>');
+            parts.push('<td class="to-order">' + esc(entry.weekdayOrder) + '</td>');
+            parts.push('<td>' + esc(entry.estWeekdayOnHand) + '</td>');
+            parts.push('<td>' + esc(entry.weekendPar) + '</td>');
+            parts.push('<td class="to-order">' + esc(entry.weekendOrder) + '</td>');
+            parts.push('<td>' + esc(entry.estWeekendOnHand) + '</td>');
+          }
+          parts.push('</tr>');
+        });
+
+        parts.push('</tbody></table>');
+      });
+
+      parts.push('</body></html>');
+
+      var blob = new Blob([parts.join('')], { type: "text/html" });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement("a");
+      a.href = url;
+      a.download = "jbs_order_history_" + mode + ".html";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
