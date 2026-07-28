@@ -1,0 +1,5820 @@
+<!--
+JBS Ordering App - GitHub Pages ready
+Upload this file as index.html in the TOP LEVEL of your GitHub repository.
+Optional product images should go in /images/ next to this file.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>JBS Ordering Guide – Mobile UI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --ink: #111827;
+      --muted: #6b7280;
+      --line: #d1d5db;
+      --soft: #f3f4f6;
+      --black: #050505;
+      --charcoal: #171717;
+      --gold: #d4a017;
+      --gold-bright: #facc15;
+      --gold-soft: #fff8df;
+      --blue-head: #9bbff3;
+      --danger: #b91c1c;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color-scheme: light;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--ink);
+    }
+
+    body {
+      padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+    }
+
+    button, input, textarea {
+      font: inherit;
+    }
+
+    button {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .app-shell {
+      max-width: 520px;
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: 1rem 1rem 5.75rem;
+      background: #fff;
+    }
+
+    .brand-header {
+      text-align: center;
+      padding: 0.35rem 0 0.8rem;
+    }
+
+    .brand-mark {
+      font-weight: 900;
+      font-size: 2rem;
+      line-height: 1;
+      letter-spacing: -0.04em;
+    }
+
+    .brand-mark .gold {
+      color: var(--gold);
+      font-style: italic;
+      margin-left: 0.2rem;
+    }
+
+    .brand-sub {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.55rem;
+      margin-top: 0.25rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+
+    .brand-sub::before,
+    .brand-sub::after {
+      content: "";
+      width: 3rem;
+      height: 2px;
+      background: var(--gold);
+      display: inline-block;
+    }
+
+    .today-card {
+      margin: 0.45rem 0 1rem;
+      border: 2px solid #111827;
+      border-radius: 1rem;
+      background: linear-gradient(180deg, #ffffff, #fff8df);
+      box-shadow: 0 10px 24px rgba(0,0,0,0.12);
+      overflow: hidden;
+    }
+
+    .today-topline {
+      background: #111827;
+      color: var(--gold-bright);
+      font-weight: 950;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 0.72rem;
+      padding: 0.55rem 0.75rem;
+      text-align: center;
+    }
+
+    .today-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.75rem;
+      align-items: center;
+      padding: 0.75rem 0.85rem 0.4rem;
+    }
+
+    .today-day {
+      font-size: 1.25rem;
+      font-weight: 950;
+      line-height: 1;
+    }
+
+    .today-date {
+      margin-top: 0.18rem;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .today-completion-pill {
+      border-radius: 999px;
+      padding: 0.35rem 0.6rem;
+      font-size: 0.72rem;
+      font-weight: 950;
+      white-space: nowrap;
+      background: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
+
+    .today-completion-pill.complete {
+      background: #dcfce7;
+      color: #166534;
+      border-color: #86efac;
+    }
+
+    .today-help {
+      padding: 0 0.85rem 0.65rem;
+      color: var(--muted);
+      font-size: 0.78rem;
+      line-height: 1.32;
+    }
+
+    .today-task-list {
+      display: grid;
+      gap: 0.55rem;
+      padding: 0 0.75rem 0.75rem;
+    }
+
+    .today-task {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+      border: 1px solid #e5e7eb;
+      border-radius: 0.85rem;
+      background: #fff;
+      padding: 0.65rem;
+    }
+
+    .today-task.status-done {
+      background: linear-gradient(90deg, #ecfdf5, #ffffff);
+      border-color: #22c55e;
+    }
+
+    .today-task.status-started {
+      background: linear-gradient(90deg, #fffbeb, #ffffff);
+      border-color: var(--gold);
+    }
+
+    .today-task.status-missing {
+      background: linear-gradient(90deg, #fff1f2, #ffffff);
+      border-color: #fca5a5;
+    }
+
+    .today-task-main {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      min-width: 0;
+    }
+
+    .today-task-dot {
+      width: 0.72rem;
+      height: 0.72rem;
+      border-radius: 999px;
+      background: #ef4444;
+      flex: 0 0 auto;
+    }
+
+    .today-task.status-started .today-task-dot {
+      background: var(--gold-bright);
+    }
+
+    .today-task.status-done .today-task-dot {
+      background: #22c55e;
+    }
+
+    .today-task-name {
+      font-weight: 950;
+      line-height: 1.1;
+      flex: 1 1 auto;
+    }
+
+    .today-task-state {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 950;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .today-task-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.45rem;
+    }
+
+    .today-task-actions button {
+      border: 0;
+      border-radius: 0.7rem;
+      min-height: 2.45rem;
+      font-weight: 950;
+      cursor: pointer;
+    }
+
+    .today-start-btn {
+      background: #111827;
+      color: #fff;
+    }
+
+    .today-done-btn {
+      background: var(--gold-bright);
+      color: #111827;
+    }
+
+    .today-task.status-done .today-done-btn {
+      background: #e5e7eb;
+      color: #111827;
+    }
+
+    .today-footer-note {
+      padding: 0 0.85rem 0.8rem;
+      color: #991b1b;
+      font-size: 0.76rem;
+      font-weight: 800;
+      line-height: 1.3;
+    }
+
+    .today-footer-note.complete {
+      color: #166534;
+    }
+
+    /* Option 2 Guided Mode */
+    .guided-card {
+      margin: 0.45rem 0 1rem;
+      border: 1px solid #d1d5db;
+      border-radius: 1rem;
+      background: #fff;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.10);
+      overflow: hidden;
+    }
+
+    .guided-bar {
+      min-height: 3.2rem;
+      display: grid;
+      grid-template-columns: 2.5rem 1fr 2.5rem;
+      align-items: center;
+      background: #0757d7;
+      color: #fff;
+      padding: 0 0.4rem;
+      text-align: center;
+      font-weight: 950;
+      letter-spacing: 0.01em;
+    }
+
+    .guided-back-mini,
+    .guided-info-mini {
+      border: 0;
+      background: transparent;
+      color: #fff;
+      font-size: 1.9rem;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .guided-info-mini {
+      font-size: 1rem;
+      width: 1.55rem;
+      height: 1.55rem;
+      border: 1.5px solid rgba(255,255,255,.8);
+      border-radius: 999px;
+      justify-self: center;
+      font-weight: 900;
+    }
+
+    .guided-screen {
+      display: none;
+      padding: 1.05rem 0.9rem;
+      text-align: center;
+    }
+
+    .guided-screen.active {
+      display: block;
+    }
+
+    .guided-business-day {
+      color: #111827;
+      font-size: 1rem;
+      font-weight: 950;
+      margin-top: 0.1rem;
+    }
+
+    .guided-rollover {
+      color: #4b5563;
+      font-size: 0.78rem;
+      font-weight: 700;
+      margin-top: 0.18rem;
+    }
+
+    .guided-hero-icon,
+    .guided-task-icon,
+    .guided-complete-icon {
+      width: 6.2rem;
+      height: 6.2rem;
+      display: grid;
+      place-items: center;
+      margin: 1rem auto 0.75rem;
+      border-radius: 999px;
+      background: #fff8df;
+      color: #d4a017;
+      border: 1px solid #fde68a;
+      font-size: 3rem;
+      font-weight: 950;
+    }
+
+    .guided-task-icon.blue {
+      background: #eff6ff;
+      color: #0757d7;
+      border-color: #bfdbfe;
+    }
+
+    .guided-task-icon.green,
+    .guided-complete-icon {
+      background: #ecfdf5;
+      color: #16a34a;
+      border-color: #bbf7d0;
+    }
+
+    .guided-task-icon.red {
+      background: #fff1f2;
+      color: #dc2626;
+      border-color: #fecdd3;
+    }
+
+    .guided-screen h2 {
+      font-size: 1.45rem;
+      margin: 0.2rem 0 0.2rem;
+      line-height: 1.1;
+    }
+
+    .guided-screen p {
+      color: #374151;
+      font-size: 0.88rem;
+      line-height: 1.38;
+      margin: 0.55rem auto 1rem;
+      max-width: 20rem;
+    }
+
+    .guided-step-count,
+    .guided-required {
+      color: #0757d7;
+      font-size: 0.8rem;
+      font-weight: 950;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .guided-required {
+      color: #dc2626;
+      text-transform: none;
+      letter-spacing: 0;
+      margin-top: 0.15rem;
+    }
+
+    .guided-primary-wide,
+    .guided-secondary-wide {
+      width: 100%;
+      min-height: 3.05rem;
+      border-radius: 0.72rem;
+      font-weight: 950;
+      cursor: pointer;
+      margin-top: 0.55rem;
+    }
+
+    .guided-primary-wide {
+      border: 0;
+      color: #fff;
+      background: #0757d7;
+      box-shadow: 0 6px 12px rgba(7,87,215,0.2);
+    }
+
+    .guided-primary-wide.gold {
+      background: var(--gold-bright);
+      color: #111827;
+      box-shadow: 0 6px 12px rgba(212,160,23,0.22);
+    }
+
+    .guided-secondary-wide {
+      border: 1px solid #d1d5db;
+      background: #fff;
+      color: #111827;
+    }
+
+    .guided-small-row {
+      display: grid;
+      gap: 0.35rem;
+      margin: 0.85rem 0 0.45rem;
+      color: #6b7280;
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    #todayCompletionPill {
+      display: inline-block;
+      justify-self: center;
+      border-radius: 999px;
+      padding: 0.35rem 0.65rem;
+      background: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+      font-weight: 950;
+    }
+
+    #todayCompletionPill.complete {
+      background: #dcfce7;
+      color: #166534;
+      border-color: #86efac;
+    }
+
+    #todayMissingNote.complete {
+      color: #166534;
+    }
+
+    .guided-arrow-nav {
+      display: grid;
+      grid-template-columns: 4.25rem 1fr 4.25rem;
+      align-items: center;
+      gap: 0.7rem;
+      margin-top: 1rem;
+      padding: 0.55rem;
+      border-radius: 1rem;
+      background: #f8fafc;
+      border: 1px solid #e5e7eb;
+    }
+
+    .guided-arrow-btn {
+      width: 4.25rem;
+      height: 3.35rem;
+      border: 0;
+      border-radius: 0.9rem;
+      background: #0757d7;
+      color: #fff;
+      font-size: 2.45rem;
+      line-height: 1;
+      font-weight: 950;
+      cursor: pointer;
+      box-shadow: 0 5px 12px rgba(7, 87, 215, 0.20);
+    }
+
+    .guided-arrow-btn:active {
+      transform: translateY(1px);
+    }
+
+    .guided-arrow-status {
+      color: #111827;
+      font-size: 0.86rem;
+      font-weight: 950;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      text-align: center;
+    }
+
+    .guided-rule-note {
+      border-top: 1px solid #e5e7eb;
+      background: #f9fafb;
+      color: #374151;
+      padding: 0.65rem 0.85rem;
+      font-size: 0.76rem;
+      line-height: 1.3;
+    }
+
+    .guided-hidden {
+      display: none !important;
+    }
+
+    .guided-active-section {
+      display: block !important;
+      border: 3px solid #0757d7;
+      box-shadow: 0 10px 24px rgba(7, 87, 215, 0.18);
+    }
+
+    #savedInfo.guided-hidden {
+      display: none !important;
+    }
+
+    .workflow-panel {
+      min-height: 0;
+    }
+
+    .guided-active-section.workflow-panel {
+      height: min(62vh, 34rem);
+      min-height: 22rem;
+      max-height: calc(100dvh - 16rem);
+      display: flex !important;
+      flex-direction: column;
+      overflow: hidden;
+      border-radius: 1rem;
+      background: #fff;
+    }
+
+    .guided-active-section.workflow-panel > .section-title {
+      flex: 0 0 auto;
+      border-bottom: 1px solid var(--line);
+      background: #fff;
+      padding-bottom: 0.8rem;
+    }
+
+    .guided-active-section.workflow-panel > .collapsible-content {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+      padding-bottom: 0.8rem;
+      background: #fff;
+    }
+
+    .guided-active-section.workflow-panel .commissary-mobile-sheet,
+    .guided-active-section.workflow-panel .prep-sheet,
+    .guided-active-section.workflow-panel .bek-sheet {
+      height: calc(100% - 1rem);
+      max-height: none;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .guided-active-section.workflow-panel .commissary-view-panel.active,
+    .guided-active-section.workflow-panel .prep-sheet table,
+    .guided-active-section.workflow-panel .bek-list {
+      min-height: 0;
+    }
+
+    .guided-active-section.workflow-panel .commissary-card-list,
+    .guided-active-section.workflow-panel .bek-list {
+      flex: 1 1 auto;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+    }
+
+    .guided-active-section.workflow-panel .prep-sheet {
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+    }
+
+    .guided-active-section.workflow-panel textarea {
+      min-height: 14rem;
+    }
+
+    @media (max-height: 720px) {
+      .guided-active-section.workflow-panel {
+        height: 52vh;
+        min-height: 18rem;
+        max-height: calc(100dvh - 14rem);
+      }
+    }
+
+    /* Sketch-inspired dashboard UI: N1/S1/S2/S3/S4 panels */
+    .dashboard-app {
+      max-width: 1120px;
+      display: grid;
+      grid-template-columns: minmax(150px, 190px) minmax(0, 1fr);
+      grid-template-areas:
+        "brand brand"
+        "nav calendar"
+        "nav daily"
+        "nav prep"
+        "nav bek"
+        "nav commissary"
+        "nav notes";
+      gap: 1rem;
+      align-items: start;
+    }
+
+    .dashboard-app .brand-header {
+      grid-area: brand;
+    }
+
+    .dashboard-app .guided-card {
+      display: none !important;
+    }
+
+    .dashboard-nav-panel {
+      grid-area: nav;
+      position: sticky;
+      top: 0.75rem;
+      align-self: start;
+      border: 1px solid var(--line);
+      border-radius: 1rem;
+      background: #fff;
+      padding: 0.8rem;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+      min-height: 28rem;
+    }
+
+    .dashboard-nav-title {
+      font-size: 1.35rem;
+      font-weight: 950;
+      color: #0757d7;
+      line-height: 1;
+    }
+
+    .dashboard-nav-subtitle {
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 850;
+      line-height: 1.25;
+      margin: 0.2rem 0 0.75rem;
+    }
+
+    .dashboard-business {
+      border-radius: 0.75rem;
+      background: #eff6ff;
+      color: #1e3a8a;
+      padding: 0.55rem;
+      font-size: 0.72rem;
+      font-weight: 950;
+      text-align: center;
+      margin-bottom: 0.6rem;
+    }
+
+    .dashboard-notice-list {
+      display: grid;
+      gap: 0.4rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .dashboard-notice {
+      border-radius: 0.65rem;
+      border: 1px solid #e5e7eb;
+      background: #f9fafb;
+      padding: 0.48rem 0.5rem;
+      font-size: 0.72rem;
+      font-weight: 800;
+      line-height: 1.2;
+      display: grid;
+      grid-template-columns: 0.65rem 1fr;
+      gap: 0.45rem;
+      align-items: center;
+    }
+
+    .dashboard-notice-dot {
+      width: 0.62rem;
+      height: 0.62rem;
+      border-radius: 999px;
+      background: #ef4444;
+    }
+
+    .dashboard-notice.done .dashboard-notice-dot {
+      background: #22c55e;
+    }
+
+    .dashboard-notice.started .dashboard-notice-dot {
+      background: #facc15;
+    }
+
+    .dashboard-nav-buttons {
+      display: grid;
+      gap: 0.45rem;
+    }
+
+    .dash-nav-btn {
+      border: 0;
+      border-radius: 0.7rem;
+      background: #111827;
+      color: #fff;
+      min-height: 2.4rem;
+      font-weight: 950;
+      cursor: pointer;
+    }
+
+    .dash-nav-btn:active {
+      transform: translateY(1px);
+      background: #0757d7;
+    }
+
+    .dashboard-calendar-panel {
+      grid-area: calendar;
+      border: 1px solid var(--line);
+      border-radius: 1rem;
+      background: #fff;
+      padding: 0.8rem;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+      min-height: 11rem;
+    }
+
+    .dashboard-panel-label {
+      color: #0757d7;
+      font-weight: 950;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 0.72rem;
+      margin-bottom: 0.45rem;
+    }
+
+    .calendar-heading {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.75rem;
+      align-items: baseline;
+      margin-bottom: 0.55rem;
+    }
+
+    .calendar-heading strong {
+      font-size: 1.05rem;
+    }
+
+    .calendar-heading span {
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 850;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      border: 1px solid #e5e7eb;
+      border-radius: 0.8rem;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .calendar-cell {
+      min-height: 3.2rem;
+      border-right: 1px solid #e5e7eb;
+      border-bottom: 1px solid #e5e7eb;
+      padding: 0.35rem 0.25rem;
+      text-align: center;
+      display: grid;
+      gap: 0.2rem;
+      align-content: center;
+      color: #111827;
+      background: #fff;
+    }
+
+    .calendar-cell:nth-child(7n) {
+      border-right: 0;
+    }
+
+    .calendar-day-name {
+      font-size: 0.64rem;
+      font-weight: 950;
+      text-transform: uppercase;
+      color: #6b7280;
+      letter-spacing: 0.04em;
+    }
+
+    .calendar-day-num {
+      font-size: 0.95rem;
+      font-weight: 950;
+    }
+
+    .calendar-cell.current-week {
+      background: #fff8df;
+    }
+
+    .calendar-cell.current-day {
+      background: #0757d7;
+      color: #fff;
+    }
+
+    .calendar-cell.current-day .calendar-day-name {
+      color: #dbeafe;
+    }
+
+    .dashboard-app .section-card {
+      margin-top: 0;
+      min-height: 0;
+    }
+
+    .dashboard-app .workflow-panel,
+    .dashboard-app .section-card[data-section="ben-e-keith"] {
+      display: flex !important;
+      flex-direction: column;
+      min-height: 18rem;
+      height: 30rem;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+    }
+
+    .dashboard-app .workflow-panel.guided-hidden,
+    .dashboard-app .section-card[data-section="ben-e-keith"].guided-hidden {
+      display: flex !important;
+    }
+
+    .dashboard-app .workflow-panel.collapsed .collapsible-content,
+    .dashboard-app .section-card[data-section="ben-e-keith"].collapsed .collapsible-content {
+      display: block !important;
+    }
+
+    .dashboard-app .section-title {
+      flex: 0 0 auto;
+      border-bottom: 1px solid var(--line);
+      padding: 0.75rem 0.85rem;
+      background: #fff;
+      cursor: default;
+    }
+
+    .dashboard-app .collapse-chevron {
+      display: none;
+    }
+
+    .dashboard-app .collapsible-content {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+      display: block !important;
+      padding-bottom: 0.75rem;
+    }
+
+    .dashboard-app [data-section="ordering"] {
+      grid-area: daily;
+      height: 24rem;
+    }
+
+    .dashboard-app [data-section="to-be-prepped"] {
+      grid-area: prep;
+      height: 26rem;
+    }
+
+    .dashboard-app [data-section="ben-e-keith"] {
+      grid-area: bek;
+      height: 30rem;
+    }
+
+    .dashboard-app [data-section="commissary-order"] {
+      grid-area: commissary;
+      height: 25rem;
+    }
+
+    .dashboard-app [data-section="shift-notes"] {
+      grid-area: notes;
+      height: 14rem;
+    }
+
+    .dashboard-app [data-section="ordering"] .section-title::before {
+      content: "S2";
+      color: #0757d7;
+      font-weight: 950;
+      margin-right: 0.35rem;
+    }
+
+    .dashboard-app [data-section="to-be-prepped"] .section-title::before {
+      content: "S3";
+      color: #0757d7;
+      font-weight: 950;
+      margin-right: 0.35rem;
+    }
+
+    .dashboard-app [data-section="ben-e-keith"] .section-title::before {
+      content: "S4";
+      color: #0757d7;
+      font-weight: 950;
+      margin-right: 0.35rem;
+    }
+
+    .dashboard-app .commissary-card-list,
+    .dashboard-app .bek-list {
+      max-height: none;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .dashboard-app .commissary-mobile-sheet,
+    .dashboard-app .bek-sheet,
+    .dashboard-app .prep-sheet {
+      min-height: 0;
+      max-height: none;
+    }
+
+    .dashboard-app #savedInfo.guided-hidden {
+      display: block !important;
+    }
+
+    /* v56: full-month S1 calendar + collapsible S panels */
+    .dashboard-calendar-panel {
+      min-height: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .dashboard-calendar-panel > .section-title {
+      width: 100%;
+      border: 0;
+      border-bottom: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.8rem 0.85rem;
+      font-weight: 950;
+      cursor: pointer;
+    }
+
+    .dashboard-calendar-panel > .collapsible-content {
+      padding: 0.8rem;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .dashboard-app .collapse-chevron {
+      display: inline-block;
+    }
+
+    .dashboard-app .section-title {
+      cursor: pointer;
+    }
+
+    .dashboard-app .workflow-panel.collapsed,
+    .dashboard-app .section-card[data-section="ben-e-keith"].collapsed,
+    .dashboard-app .dashboard-calendar-panel.collapsed {
+      height: auto !important;
+      min-height: 0 !important;
+    }
+
+    .dashboard-app .workflow-panel.collapsed .collapsible-content,
+    .dashboard-app .section-card[data-section="ben-e-keith"].collapsed .collapsible-content,
+    .dashboard-app .dashboard-calendar-panel.collapsed .collapsible-content {
+      display: none !important;
+    }
+
+    .dashboard-app .workflow-panel:not(.collapsed) .collapsible-content,
+    .dashboard-app .section-card[data-section="ben-e-keith"]:not(.collapsed) .collapsible-content {
+      display: block;
+    }
+
+    .dashboard-app .collapsible-section.collapsed .collapse-chevron {
+      transform: rotate(-90deg);
+    }
+
+    .dashboard-app .dashboard-calendar-panel {
+      min-height: 22rem;
+    }
+
+    .dashboard-app .dashboard-calendar-panel.collapsed {
+      min-height: 0;
+    }
+
+    .calendar-grid {
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+    }
+
+    .calendar-header-cell {
+      background: #111827;
+      color: #facc15;
+      min-height: 2rem;
+      display: grid;
+      place-items: center;
+      font-size: 0.67rem;
+      font-weight: 950;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      border-right: 1px solid #374151;
+    }
+
+    .calendar-header-cell:nth-child(7n) {
+      border-right: 0;
+    }
+
+    .calendar-cell {
+      min-height: 3.35rem;
+      position: relative;
+    }
+
+    .calendar-cell.outside-month {
+      background: #f9fafb;
+      color: #9ca3af;
+    }
+
+    .calendar-cell.current-week {
+      background: #fff8df;
+      box-shadow: inset 0 0 0 1px rgba(212,160,23,0.28);
+    }
+
+    .calendar-cell.current-day {
+      background: #facc15;
+      color: #111827;
+      box-shadow: inset 0 0 0 3px #111827;
+    }
+
+    .calendar-cell.current-day .calendar-day-name {
+      color: #111827;
+    }
+
+    .calendar-cell.today-marker::after {
+      content: "Today";
+      position: absolute;
+      left: 50%;
+      bottom: 0.25rem;
+      transform: translateX(-50%);
+      font-size: 0.55rem;
+      font-weight: 950;
+      background: #111827;
+      color: #facc15;
+      border-radius: 999px;
+      padding: 0.08rem 0.35rem;
+    }
+
+    .calendar-day-num {
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 760px) {
+      .dashboard-app {
+        max-width: 520px;
+        display: block;
+      }
+
+      .dashboard-nav-panel {
+        position: static;
+        min-height: 0;
+        margin-bottom: 1rem;
+      }
+
+      .dashboard-calendar-panel,
+      .dashboard-app .workflow-panel,
+      .dashboard-app .section-card[data-section="ben-e-keith"] {
+        margin-bottom: 1rem;
+      }
+
+      .dashboard-app [data-section="ordering"],
+      .dashboard-app [data-section="to-be-prepped"],
+      .dashboard-app [data-section="ben-e-keith"],
+      .dashboard-app [data-section="commissary-order"] {
+        height: 28rem;
+      }
+    }
+
+    .mode-toggle {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border: 1px solid var(--line);
+      border-radius: 0.8rem;
+      overflow: hidden;
+      background: #fff;
+      margin: 0.35rem 0 1rem;
+    }
+
+    .mode-btn {
+      border: 0;
+      padding: 0.7rem 0.5rem;
+      background: #fff;
+      color: var(--ink);
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .mode-btn.active {
+      background: var(--black);
+      color: var(--gold-bright);
+    }
+
+    .daily-par-note {
+      margin: 0.35rem 0 1rem;
+      border: 1px solid var(--gold);
+      border-radius: 0.8rem;
+      background: #fff8df;
+      color: #111827;
+      padding: 0.7rem 0.8rem;
+      font-weight: 950;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-size: 0.78rem;
+    }
+
+    .location-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.8rem;
+    }
+
+    .location-card {
+      border: 1.5px solid #262626;
+      border-radius: 1rem;
+      min-height: 8.1rem;
+      background: linear-gradient(145deg, #232323, #050505);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.25rem;
+      cursor: pointer;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.18);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .location-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      border: 2px solid transparent;
+      pointer-events: none;
+    }
+
+    .location-card.has-active::after,
+    .location-card:focus::after {
+      border-color: var(--gold-bright);
+    }
+
+    .location-icon {
+      font-size: 2.25rem;
+      color: var(--gold-bright);
+      line-height: 1;
+    }
+
+    .location-title {
+      font-size: 1.35rem;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .location-count,
+    .location-active-count {
+      color: var(--gold-bright);
+      font-weight: 800;
+      font-size: 0.9rem;
+    }
+
+    .location-active-count {
+      background: rgba(250,204,21,0.12);
+      border-radius: 999px;
+      padding: 0.12rem 0.45rem;
+      margin-top: 0.1rem;
+    }
+
+    .section-card {
+      margin-top: 1rem;
+      border: 1px solid var(--line);
+      border-radius: 1rem;
+      background: #fff;
+      overflow: hidden;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-weight: 900;
+      padding: 0.8rem 0.85rem 0.45rem;
+    }
+
+    .section-title .icon {
+      color: var(--gold);
+    }
+
+    .section-title {
+      width: 100%;
+      border: 0;
+      background: transparent;
+      color: var(--ink);
+      cursor: pointer;
+      justify-content: space-between;
+      text-align: left;
+    }
+
+    .section-title .title-left {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    .collapse-chevron {
+      color: var(--gold);
+      font-size: 1.2rem;
+      line-height: 1;
+      transition: transform 0.18s ease;
+    }
+
+    .collapsible-section.collapsed .collapse-chevron {
+      transform: rotate(-90deg);
+    }
+
+    .collapsible-content {
+      overflow: hidden;
+    }
+
+    .collapsible-section.collapsed .collapsible-content {
+      display: none;
+    }
+
+    .collapsible-section.collapsed {
+      background: #fff;
+    }
+
+    .guided-active-section.workflow-panel > .section-title::after {
+      content: "Scroll this panel";
+      margin-left: auto;
+      color: var(--muted);
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      padding-left: 0.45rem;
+    }
+
+    textarea {
+      display: block;
+      width: calc(100% - 1.7rem);
+      margin: 0 0.85rem 0.85rem;
+      min-height: 5.75rem;
+      resize: vertical;
+      border: 1px solid var(--line);
+      border-radius: 0.75rem;
+      padding: 0.7rem;
+      background: #fff;
+      color: var(--ink);
+    }
+
+    .prep-sheet {
+      margin: 0 0.7rem 0.8rem;
+      border: 1px solid var(--line);
+      border-radius: 0.8rem;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .prep-head {
+      text-align: center;
+      padding: 0.9rem 0.7rem 0.75rem;
+      background: #fff;
+    }
+
+    .prep-logo {
+      font-size: 0.75rem;
+      font-weight: 900;
+      letter-spacing: 0.05em;
+      line-height: 1.05;
+    }
+
+    .prep-logo .runner {
+      display: block;
+      font-size: 1.35rem;
+      transform: rotate(-7deg);
+    }
+
+    .prep-title {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.25rem;
+      margin: 0.5rem 0 0.45rem;
+      letter-spacing: 0.03em;
+      color: #4b5563;
+    }
+
+    .prep-lines {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 0.35rem 0.45rem;
+      align-items: end;
+      max-width: 250px;
+      margin: 0 auto;
+      font-size: 0.7rem;
+    }
+
+    .prep-line {
+      border-bottom: 1px solid #111827;
+      min-height: 1rem;
+      text-align: left;
+      padding-left: 0.2rem;
+    }
+
+    .prep-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.75rem;
+      table-layout: fixed;
+    }
+
+    .prep-table th {
+      background: var(--blue-head);
+      color: #111827;
+      text-align: left;
+      padding: 0.6rem 0.45rem;
+      border: 1px solid #aeb8c7;
+      font-size: 0.68rem;
+      text-transform: uppercase;
+    }
+
+    .prep-table td {
+      border: 1px solid #d1d5db;
+      padding: 0.4rem 0.45rem;
+      vertical-align: middle;
+      background: #fff;
+    }
+
+    .prep-table tr.gray-row td {
+      background: #d9d9d9;
+    }
+
+    .prep-table .done-cell {
+      text-align: center;
+      width: 3.4rem;
+    }
+
+    .prep-table .prep-qty-cell {
+      width: 8.7rem;
+    }
+
+    .prep-table input[type="checkbox"] {
+      width: 1.1rem;
+      height: 1.1rem;
+      accent-color: var(--gold);
+    }
+
+    .prep-table tr.prep-has-qty td {
+      background: var(--gold-soft);
+    }
+
+    .prep-table tr.gray-row.prep-has-qty td {
+      background: #e8dcc0;
+    }
+
+    .prep-stepper {
+      display: grid;
+      grid-template-columns: 2rem minmax(1.8rem, 1fr) 2rem;
+      gap: 0.25rem;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .prep-step-btn {
+      border: 0;
+      border-radius: 0.45rem;
+      width: 2rem;
+      height: 2rem;
+      background: #e5e7eb;
+      color: #111827;
+      font-size: 1.35rem;
+      line-height: 1;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .prep-step-btn:active {
+      background: var(--gold-bright);
+      transform: translateY(1px);
+    }
+
+    .prep-qty-value {
+      text-align: center;
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+      color: var(--ink);
+    }
+
+    .prep-yesno {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.35rem;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .prep-choice-btn {
+      border: 1px solid #d1d5db;
+      border-radius: 0.55rem;
+      min-height: 2.15rem;
+      background: #fff;
+      color: #111827;
+      font-size: 0.78rem;
+      font-weight: 950;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .prep-choice-btn:active {
+      transform: translateY(1px);
+    }
+
+    .prep-choice-btn.active-no {
+      background: #fee2e2;
+      border-color: #fca5a5;
+      color: #991b1b;
+    }
+
+    .prep-choice-btn.active-yes {
+      background: #dcfce7;
+      border-color: #86efac;
+      color: #166534;
+    }
+
+    .prep-preview-note {
+      margin: 0 0.85rem 0.85rem;
+      border: 1px solid #f0c453;
+      background: var(--gold-soft);
+      border-radius: 0.75rem;
+      padding: 0.65rem 0.75rem;
+      font-size: 0.78rem;
+      color: #4b5563;
+    }
+
+    .commissary-sheet {
+      margin: 0 0.7rem 0.8rem;
+      border: 1px solid #111827;
+      border-radius: 0.8rem;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .commissary-head {
+      display: grid;
+      grid-template-columns: 4.5rem 1fr 4.5rem;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.7rem 0.5rem;
+      border-bottom: 1px solid #111827;
+      background: #fff;
+    }
+
+    .commissary-title {
+      text-align: center;
+      font-weight: 950;
+      font-size: 1rem;
+      letter-spacing: 0.03em;
+    }
+
+    .mini-logo {
+      text-align: center;
+      font-size: 0.55rem;
+      font-weight: 900;
+      line-height: 1.05;
+    }
+
+    .mini-logo .runner {
+      display: block;
+      font-size: 1.1rem;
+      transform: rotate(-7deg);
+    }
+
+    .commissary-scroll {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .commissary-table {
+      width: 100%;
+      min-width: 760px;
+      border-collapse: collapse;
+      table-layout: fixed;
+      font-size: 0.74rem;
+    }
+
+    .commissary-table th {
+      background: #ccffcc;
+      color: #000;
+      border: 1px solid #111827;
+      padding: 0.55rem 0.35rem;
+      text-align: center;
+      text-transform: uppercase;
+      font-weight: 950;
+      line-height: 1.15;
+    }
+
+    .commissary-table td {
+      border: 1px solid #111827;
+      padding: 0.4rem 0.35rem;
+      text-align: center;
+      background: #fff;
+      color: #000;
+      font-weight: 650;
+      vertical-align: middle;
+    }
+
+    .commissary-table tbody tr:nth-child(even) td {
+      background: #eeeeee;
+    }
+
+    .commissary-table .commissary-item {
+      font-weight: 950;
+      text-align: center;
+    }
+
+    .commissary-input {
+      width: 100%;
+      min-height: 2.1rem;
+      border: 1px solid #cbd5e1;
+      border-radius: 0.35rem;
+      padding: 0.25rem;
+      text-align: center;
+      background: #fff;
+      color: #111827;
+      font-weight: 800;
+    }
+
+    .commissary-table tfoot td {
+      background: #ccffcc !important;
+      text-align: left;
+      font-weight: 950;
+      text-transform: uppercase;
+    }
+
+    .commissary-footer-input {
+      width: 55%;
+      border: 0;
+      border-bottom: 1px solid #111827;
+      background: transparent;
+      outline: none;
+      margin-left: 0.25rem;
+      color: #111827;
+      font-weight: 800;
+    }
+
+    /* Mobile card layout for Commissary Order */
+    .commissary-mobile-sheet {
+      margin: 0 0.7rem 0.8rem;
+      border: 1px solid var(--line);
+      border-radius: 1rem;
+      overflow: hidden;
+      background: #f8fafc;
+    }
+
+    .commissary-mobile-head {
+      display: grid;
+      grid-template-columns: 4.5rem 1fr;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.75rem;
+      background: #fff;
+      border-bottom: 2px solid var(--gold);
+    }
+
+    .commissary-title {
+      font-weight: 950;
+      font-size: 1rem;
+      letter-spacing: 0.03em;
+    }
+
+    .commissary-subtitle {
+      color: var(--muted);
+      font-size: 0.74rem;
+      margin-top: 0.1rem;
+    }
+
+    .mini-logo {
+      text-align: center;
+      font-size: 0.55rem;
+      font-weight: 900;
+      line-height: 1.05;
+    }
+
+    .mini-logo .runner {
+      display: block;
+      font-size: 1.1rem;
+      transform: rotate(-7deg);
+    }
+
+    .commissary-search-wrap {
+      padding: 0.65rem;
+      background: #fff;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .commissary-search-wrap input {
+      width: 100%;
+      min-height: 2.75rem;
+      border: 1px solid var(--line);
+      border-radius: 0.9rem;
+      padding: 0.65rem 0.75rem;
+      background: #fff;
+      color: var(--ink);
+      font-size: 0.9rem;
+    }
+
+    .commissary-card-list {
+      padding: 0.75rem 0.65rem;
+    }
+
+    .commissary-card {
+      display: grid;
+      grid-template-columns: 72px 1fr auto;
+      gap: 0.7rem;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: 1rem;
+      background: #fff;
+      padding: 0.65rem;
+      margin-bottom: 0.75rem;
+      min-height: 6.4rem;
+    }
+
+    .commissary-card.has-value {
+      background: linear-gradient(90deg, #fff9db, #fff);
+      border-color: var(--gold);
+      box-shadow: 0 0 0 1px rgba(212,160,23,0.18);
+    }
+
+    .commissary-thumb {
+      width: 72px;
+      height: 72px;
+      border-radius: 0.8rem;
+      font-size: 1rem;
+      color: var(--gold);
+      background: #f3f4f6;
+      border: 1px solid #e5e7eb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 950;
+      flex: 0 0 auto;
+    }
+
+    .commissary-card-title {
+      font-weight: 950;
+      line-height: 1.12;
+      margin-bottom: 0.25rem;
+    }
+
+    .commissary-card-meta {
+      color: var(--muted);
+      font-size: 0.74rem;
+      line-height: 1.25;
+    }
+
+    .commissary-par-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem 0.6rem;
+      color: var(--muted);
+      font-size: 0.72rem;
+      margin-top: 0.25rem;
+    }
+
+    .commissary-par-row strong {
+      color: var(--ink);
+    }
+
+    .commissary-onhand-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.35rem;
+      margin-top: 0.45rem;
+    }
+
+    .commissary-onhand-grid label,
+    .commissary-footer-card label {
+      font-size: 0.68rem;
+      color: var(--muted);
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .commissary-mini-input,
+    .commissary-footer-input {
+      width: 100%;
+      border: 1px solid #d1d5db;
+      border-radius: 0.5rem;
+      min-height: 2rem;
+      padding: 0.35rem 0.45rem;
+      background: #fff;
+      color: var(--ink);
+      font-weight: 800;
+      text-align: center;
+      margin-top: 0.18rem;
+    }
+
+    .commissary-card-order {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .commissary-order-label {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      font-weight: 950;
+    }
+
+    .commissary-stepper {
+      display: grid;
+      grid-template-columns: 2.35rem 2.55rem 2.35rem;
+      align-items: center;
+      justify-content: center;
+      gap: 0.25rem;
+    }
+
+    .commissary-step-btn {
+      border: 0;
+      width: 2.35rem;
+      height: 2.35rem;
+      border-radius: 0.55rem;
+      background: #e5e7eb;
+      color: #111827;
+      font-size: 1.55rem;
+      line-height: 1;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .commissary-step-btn:active {
+      background: var(--gold-bright);
+      transform: translateY(1px);
+    }
+
+    .commissary-qty-value {
+      text-align: center;
+      font-size: 1.25rem;
+      font-weight: 950;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .commissary-card.has-value .commissary-qty-value {
+      color: #a16207;
+    }
+
+    .commissary-footer-card {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.55rem;
+      padding: 0.75rem;
+      border-top: 1px solid #e5e7eb;
+      background: #ccffcc;
+    }
+
+    @media (max-width: 420px) {
+      .commissary-card {
+        grid-template-columns: 58px 1fr;
+        grid-template-areas:
+          "thumb info"
+          "order order";
+      }
+
+      .commissary-thumb {
+        grid-area: thumb;
+        width: 58px;
+        height: 58px;
+      }
+
+      .commissary-card-info {
+        grid-area: info;
+      }
+
+      .commissary-card-order {
+        grid-area: order;
+        align-items: stretch;
+        margin-top: 0.35rem;
+      }
+
+      .commissary-stepper {
+        grid-template-columns: 3.1rem 1fr 3.1rem;
+      }
+    }
+
+    .commissary-view-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.35rem;
+      padding: 0.65rem;
+      background: #fff;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .commissary-view-btn {
+      min-height: 2.6rem;
+      border: 1px solid #d1d5db;
+      border-radius: 0.75rem;
+      background: #fff;
+      color: #111827;
+      font-size: 0.75rem;
+      font-weight: 950;
+      cursor: pointer;
+      padding: 0.35rem;
+    }
+
+    .commissary-view-btn.active {
+      background: var(--gold-bright);
+      color: #111827;
+      border-color: #111827;
+      box-shadow: 0 0 0 2px #111827, 0 7px 16px rgba(212, 160, 23, 0.35);
+      transform: translateY(-1px);
+    }
+
+    .commissary-view-btn.active::before {
+      content: "CURRENT SHEET";
+      display: block;
+      font-size: 0.52rem;
+      line-height: 1;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.16rem;
+      color: #713f12;
+    }
+
+    .commissary-active-banner {
+      margin: 0.6rem 0.65rem 0;
+      border: 2px solid var(--gold);
+      border-radius: 0.8rem;
+      background: linear-gradient(90deg, #facc15, #fff8df);
+      color: #111827;
+      font-size: 0.78rem;
+      font-weight: 950;
+      letter-spacing: 0.08em;
+      text-align: center;
+      padding: 0.55rem 0.65rem;
+      text-transform: uppercase;
+      box-shadow: 0 5px 12px rgba(212, 160, 23, 0.22);
+    }
+
+    .commissary-view-panel {
+      display: none;
+    }
+
+    .commissary-view-panel.active {
+      display: block;
+    }
+
+    .commissary-list-heading {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+      padding: 0.7rem 0.75rem 0;
+      color: #111827;
+    }
+
+    .commissary-list-heading strong {
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .commissary-list-heading span {
+      font-size: 0.76rem;
+      color: var(--muted);
+    }
+
+    .commissary-purpose {
+      margin-top: 0.35rem;
+      color: #374151;
+    }
+
+    .commissary-card[data-comm-field="burgers"].has-value {
+      background: linear-gradient(90deg, #ecfdf5, #fff);
+      border-color: #10b981;
+    }
+
+    .commissary-card[data-comm-field="trailer"].has-value {
+      background: linear-gradient(90deg, #eff6ff, #fff);
+      border-color: #3b82f6;
+    }
+
+    .commissary-card[data-comm-field="order"].has-value {
+      background: linear-gradient(90deg, #fff9db, #fff);
+      border-color: var(--gold);
+    }
+
+    @media (max-width: 420px) {
+      .commissary-view-tabs {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .bek-sheet {
+      margin: 0 0.7rem 0.8rem;
+      border: 1px solid var(--line);
+      border-radius: 1rem;
+      overflow: hidden;
+      background: #f8fafc;
+    }
+
+    .bek-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.85rem;
+      background: #fff;
+      border-bottom: 2px solid var(--gold);
+    }
+
+    .bek-title {
+      font-size: 1rem;
+      font-weight: 950;
+    }
+
+    .bek-subtitle {
+      margin-top: 0.15rem;
+      color: var(--muted);
+      font-size: 0.74rem;
+      line-height: 1.25;
+    }
+
+    .bek-mode-pill {
+      border-radius: 999px;
+      background: #111827;
+      color: var(--gold-bright);
+      padding: 0.38rem 0.6rem;
+      font-size: 0.72rem;
+      font-weight: 950;
+      white-space: nowrap;
+    }
+
+    .bek-search-wrap {
+      padding: 0.65rem;
+      background: #fff;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .bek-search-wrap input {
+      width: 100%;
+      min-height: 2.75rem;
+      border: 1px solid var(--line);
+      border-radius: 0.9rem;
+      padding: 0.65rem 0.75rem;
+      background: #fff;
+      color: var(--ink);
+      font-size: 0.9rem;
+    }
+
+    .bek-list {
+      padding: 0.7rem 0.65rem;
+    }
+
+    .bek-category {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      margin: 0.4rem 0 0.55rem;
+      border-radius: 0.6rem;
+      background: #dbeafe;
+      color: #1e3a8a;
+      font-weight: 950;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 0.45rem 0.55rem;
+    }
+
+    .bek-card {
+      display: grid;
+      grid-template-columns: 58px 1fr;
+      grid-template-areas:
+        "thumb info"
+        "order order";
+      gap: 0.65rem;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: 1rem;
+      background: #fff;
+      padding: 0.65rem;
+      margin-bottom: 0.7rem;
+    }
+
+    .bek-card.has-value {
+      background: linear-gradient(90deg, #eff6ff, #fff);
+      border-color: #0757d7;
+      box-shadow: 0 0 0 1px rgba(7, 87, 215, 0.16);
+    }
+
+    .bek-thumb {
+      grid-area: thumb;
+      width: 58px;
+      height: 58px;
+      border-radius: 0.8rem;
+      background: #f3f4f6;
+      border: 1px solid #e5e7eb;
+      color: #0757d7;
+      display: grid;
+      place-items: center;
+      font-weight: 950;
+    }
+
+    .bek-info {
+      grid-area: info;
+      min-width: 0;
+    }
+
+    .bek-name {
+      font-weight: 950;
+      line-height: 1.12;
+    }
+
+    .bek-meta,
+    .bek-case {
+      color: var(--muted);
+      font-size: 0.72rem;
+      line-height: 1.25;
+      margin-top: 0.18rem;
+    }
+
+    .bek-par {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem 0.65rem;
+      color: var(--muted);
+      font-size: 0.72rem;
+      margin-top: 0.3rem;
+    }
+
+    .bek-par strong {
+      color: var(--ink);
+    }
+
+    .bek-onhand-label {
+      display: block;
+      font-size: 0.68rem;
+      color: var(--muted);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-top: 0.45rem;
+    }
+
+    .bek-onhand-input {
+      width: 100%;
+      border: 1px solid #d1d5db;
+      border-radius: 0.55rem;
+      min-height: 2rem;
+      padding: 0.35rem 0.45rem;
+      background: #fff;
+      color: var(--ink);
+      font-weight: 800;
+      text-align: center;
+      margin-top: 0.2rem;
+    }
+
+    .bek-order {
+      grid-area: order;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 0.6rem;
+      align-items: center;
+      margin-top: 0.15rem;
+    }
+
+    .bek-order-label {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      font-weight: 950;
+    }
+
+    .bek-stepper {
+      display: grid;
+      grid-template-columns: 3.1rem 1fr 3.1rem;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .bek-step-btn {
+      border: 0;
+      height: 2.55rem;
+      border-radius: 0.65rem;
+      background: #e5e7eb;
+      color: #111827;
+      font-size: 1.55rem;
+      line-height: 1;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .bek-step-btn:active {
+      background: #0757d7;
+      color: #fff;
+      transform: translateY(1px);
+    }
+
+    .bek-qty-value {
+      text-align: center;
+      font-size: 1.25rem;
+      font-weight: 950;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .entree-card {
+      border-color: #111827;
+      background: linear-gradient(180deg, #ffffff, #fff8df);
+    }
+
+    .entree-copy {
+      margin: 0 0.85rem 0.8rem;
+      color: var(--muted);
+      font-size: 0.84rem;
+      line-height: 1.35;
+    }
+
+    .entree-link {
+      display: block;
+      width: calc(100% - 1.7rem);
+      margin: 0 0.85rem 0.7rem;
+      min-height: 3rem;
+      border-radius: 0.8rem;
+      background: var(--black);
+      color: var(--gold-bright);
+      text-decoration: none;
+      font-weight: 900;
+      text-align: center;
+      line-height: 3rem;
+      box-shadow: 0 5px 12px rgba(0,0,0,0.16);
+    }
+
+    .entree-link:active {
+      transform: translateY(1px);
+      background: #1f2937;
+    }
+
+    .entree-status {
+      margin: 0 0.85rem 0.85rem;
+      color: var(--muted);
+      font-size: 0.76rem;
+      text-align: center;
+    }
+
+    .bottom-actions {
+      position: fixed;
+      left: 50%;
+      bottom: 0;
+      transform: translateX(-50%);
+      width: min(520px, 100vw);
+      padding: 0.65rem 1rem calc(0.65rem + env(safe-area-inset-bottom));
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(12px);
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0.6rem;
+      border-top: 1px solid #e5e7eb;
+      z-index: 40;
+    }
+
+    .action-btn {
+      border: 0;
+      border-radius: 0.8rem;
+      min-height: 3.1rem;
+      background: var(--black);
+      color: #fff;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 5px 12px rgba(0,0,0,0.16);
+    }
+
+    .action-btn.gold {
+      background: var(--gold-bright);
+      color: #111827;
+    }
+
+    .small-status {
+      margin-top: 0.7rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      background: rgba(0,0,0,0.72);
+      z-index: 80;
+    }
+
+    .modal.open {
+      display: block;
+    }
+
+    .modal-panel {
+      position: absolute;
+      inset: 0;
+      max-width: 520px;
+      margin: 0 auto;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-header {
+      background: linear-gradient(135deg, #111, #1f2937);
+      color: #fff;
+      padding: calc(0.9rem + env(safe-area-inset-top)) 1rem 0.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-title {
+      font-size: 1.65rem;
+      font-weight: 950;
+      line-height: 1;
+    }
+
+    .modal-close {
+      border: 0;
+      background: transparent;
+      color: #fff;
+      font-size: 2rem;
+      line-height: 1;
+      padding: 0.15rem 0.25rem;
+      cursor: pointer;
+    }
+
+    .search-wrap {
+      padding: 0.75rem 0.85rem;
+      background: #fff;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .search-wrap input {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 0.9rem;
+      padding: 0.7rem 0.85rem;
+      background: #fff;
+      color: var(--ink);
+      font-size: 0.95rem;
+    }
+
+    .item-list {
+      flex: 1;
+      overflow: auto;
+      padding: 0.8rem;
+      background: #f8fafc;
+    }
+
+    .item-card {
+      display: grid;
+      grid-template-columns: 72px 1fr auto;
+      gap: 0.7rem;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: 1rem;
+      background: #fff;
+      padding: 0.65rem;
+      margin-bottom: 0.75rem;
+      min-height: 6.2rem;
+    }
+
+    .item-card.has-value {
+      background: linear-gradient(90deg, #fff9db, #fff);
+      border-color: var(--gold);
+      box-shadow: 0 0 0 1px rgba(212,160,23,0.18);
+    }
+
+    .product-thumb,
+    .product-fallback {
+      width: 72px;
+      height: 72px;
+      border-radius: 0.8rem;
+      object-fit: contain;
+      background: #f3f4f6;
+      border: 1px solid #e5e7eb;
+    }
+
+    .product-fallback {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gold);
+      font-weight: 900;
+      font-size: 1.1rem;
+    }
+
+    .item-name {
+      font-weight: 900;
+      line-height: 1.15;
+      margin-bottom: 0.35rem;
+    }
+
+    .needs-dot {
+      display: inline-block;
+      width: 0.5rem;
+      height: 0.5rem;
+      border-radius: 999px;
+      background: var(--gold);
+      margin-left: 0.35rem;
+      vertical-align: middle;
+    }
+
+    .item-meta {
+      color: var(--muted);
+      font-size: 0.8rem;
+      line-height: 1.35;
+    }
+
+    .qty-stepper {
+      display: grid;
+      grid-template-columns: 2.45rem 2.7rem 2.45rem;
+      align-items: center;
+      justify-content: center;
+      gap: 0.25rem;
+    }
+
+    .qty-btn {
+      border: 0;
+      width: 2.45rem;
+      height: 2.45rem;
+      border-radius: 0.55rem;
+      background: #e5e7eb;
+      color: #111827;
+      font-size: 1.65rem;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .qty-btn:active {
+      background: var(--gold-bright);
+      transform: translateY(1px);
+    }
+
+    .qty-value {
+      text-align: center;
+      font-size: 1.3rem;
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .item-card.has-value .qty-value {
+      color: #a16207;
+    }
+
+    .empty-list {
+      padding: 1.5rem;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .review-list {
+      flex: 1;
+      overflow: auto;
+      padding: 0.85rem;
+      background: #f8fafc;
+    }
+
+    .review-group {
+      margin-bottom: 1rem;
+      border: 1px solid var(--line);
+      border-radius: 0.9rem;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .review-group h3 {
+      margin: 0;
+      padding: 0.65rem 0.75rem;
+      background: var(--black);
+      color: var(--gold-bright);
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .review-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 0.75rem;
+      padding: 0.58rem 0.75rem;
+      border-top: 1px solid #e5e7eb;
+      align-items: center;
+    }
+
+    .review-qty {
+      font-weight: 900;
+      background: var(--gold-bright);
+      color: #111827;
+      border-radius: 999px;
+      padding: 0.2rem 0.55rem;
+      min-width: 2rem;
+      text-align: center;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: calc(5.25rem + env(safe-area-inset-bottom));
+      transform: translateX(-50%) translateY(140%);
+      background: #111827;
+      color: #fff;
+      padding: 0.65rem 0.9rem;
+      border-radius: 999px;
+      font-size: 0.86rem;
+      z-index: 120;
+      transition: transform 0.2s ease;
+      box-shadow: 0 10px 22px rgba(0,0,0,0.28);
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    @media (max-width: 420px) {
+      .app-shell {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+      }
+
+      .brand-mark {
+        font-size: 1.75rem;
+      }
+
+      .location-card {
+        min-height: 7.2rem;
+      }
+
+      .item-card {
+        grid-template-columns: 58px 1fr;
+        grid-template-areas:
+          "img info"
+          "step step";
+      }
+
+      .product-thumb,
+      .product-fallback {
+        grid-area: img;
+        width: 58px;
+        height: 58px;
+      }
+
+      .item-info {
+        grid-area: info;
+      }
+
+      .qty-stepper {
+        grid-area: step;
+        justify-self: stretch;
+        grid-template-columns: 3.1rem 1fr 3.1rem;
+        margin-top: 0.3rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app-shell dashboard-app">
+    <header class="brand-header">
+      <div class="brand-mark">JewBoy<span class="gold">Sliders</span></div>
+      <div class="brand-sub">East Sixth</div>
+    </header>
+
+    <aside class="dashboard-nav-panel" id="dashboardNavPanel">
+      <div class="dashboard-nav-title">N1</div>
+      <div class="dashboard-nav-subtitle">Navigation / Notifications</div>
+      <div class="dashboard-business" id="dashboardBusinessDay">Business day</div>
+      <div class="dashboard-notice-list" id="dashboardNoticeList"></div>
+      <div class="dashboard-nav-buttons">
+        <button type="button" class="dash-nav-btn" data-dash-open="calendar">Calendar</button>
+        <button type="button" class="dash-nav-btn" data-dash-open="ordering">Daily Order</button>
+        <button type="button" class="dash-nav-btn" data-dash-open="to-be-prepped">Prep List</button>
+        <button type="button" class="dash-nav-btn" data-dash-open="ben-e-keith">Ben E. Keith</button>
+        <button type="button" class="dash-nav-btn" data-dash-open="commissary-order">Commissary</button>
+        <button type="button" class="dash-nav-btn" data-dash-open="shift-notes">Notes</button>
+      </div>
+    </aside>
+
+    <section class="dashboard-calendar-panel s1-panel collapsible-section dashboard-panel" id="dashboardCalendarPanel" data-section="calendar" data-default="open">
+      <button type="button" class="section-title collapsible-toggle calendar-toggle" aria-expanded="true">
+        <span class="title-left"><span class="icon">▣</span> S1 · Calendar</span>
+        <span class="collapse-chevron">⌄</span>
+      </button>
+      <div class="collapsible-content">
+        <div class="calendar-heading">
+          <strong id="calendarMonthLabel">Calendar</strong>
+          <span id="calendarWeekLabel">Current working week</span>
+        </div>
+        <div class="calendar-grid" id="dashboardCalendarGrid"></div>
+      </div>
+    </section>
+
+    <section class="guided-card" id="todayChecklist">
+      <div class="guided-bar">
+        <button type="button" class="guided-back-mini" id="guidedMiniBack" aria-label="Go back">‹</button>
+        <strong>Today&apos;s Orders</strong>
+        <button type="button" class="guided-info-mini" aria-label="Business day information">i</button>
+      </div>
+
+      <div class="guided-screen active" id="guidedLanding">
+        <div class="guided-business-day" id="todayDayLabel">Business Day</div>
+        <div class="guided-rollover" id="todayDateLabel">Orders roll over at 4:00 AM</div>
+        <div class="guided-hero-icon">▣</div>
+        <h2 id="guidedLandingTitle">Today&apos;s orders</h2>
+        <p id="todayHelpText">Follow the steps to finish all required orders for today.</p>
+        <button type="button" class="guided-primary-wide" id="guidedStartBtn">START TODAY&apos;S ORDERS</button>
+        <div class="guided-small-row">
+          <span id="todayCompletionPill">Checking…</span>
+          <span id="todayMissingNote"></span>
+        </div>
+      </div>
+
+      <div class="guided-screen" id="guidedStepScreen">
+        <div class="guided-step-count" id="guidedStepCount">Step 1 of 1</div>
+        <h2 id="guidedStepTitle">Daily Order List</h2>
+        <div class="guided-required">Required today</div>
+        <div class="guided-task-icon" id="guidedTaskIcon">▤</div>
+        <p class="guided-instructions" id="guidedTaskInstructions">Start this task and save when finished.</p>
+        <button type="button" class="guided-primary-wide" id="guidedPrimaryAction">Start</button>
+        <button type="button" class="guided-secondary-wide" id="guidedMarkDoneBtn">Mark as Done</button>
+        <div class="guided-arrow-nav" aria-label="Move between required order steps">
+          <button type="button" id="guidedPrevArrow" class="guided-arrow-btn" aria-label="Previous step">‹</button>
+          <div class="guided-arrow-status" id="guidedArrowStatus">Step 1 of 1</div>
+          <button type="button" id="guidedNextArrow" class="guided-arrow-btn" aria-label="Next step">›</button>
+        </div>
+      </div>
+
+      <div class="guided-screen" id="guidedCompleteScreen">
+        <h2>All Set!</h2>
+        <p id="guidedCompleteText">All required orders are marked done.</p>
+        <div class="guided-complete-icon">✓</div>
+        <button type="button" class="guided-primary-wide" id="guidedExportBtn">Export Today&apos;s Summary</button>
+        <button type="button" class="guided-secondary-wide" id="guidedHomeBtn">Back to Home</button>
+      </div>
+
+      <div class="guided-rule-note">
+        <strong>Business day rule:</strong> The order day changes at 4:00 AM.
+      </div>
+    </section>
+
+    <section class="section-card collapsible-section workflow-panel dashboard-panel s2-panel" data-section="ordering" data-default="open">
+      <button type="button" class="section-title collapsible-toggle" aria-expanded="false">
+        <span class="title-left"><span class="icon">▦</span> Daily Order List</span>
+        <span class="collapse-chevron">⌄</span>
+      </button>
+      <div class="collapsible-content">
+        <div class="daily-par-note">Weekend pars only</div>
+
+        <section class="location-grid" id="locationGrid" aria-label="Restaurant locations"></section>
+      </div>
+    </section>
+
+    <section class="section-card collapsible-section workflow-panel dashboard-panel commissary-panel" data-section="commissary-order" data-default="open">
+      <button type="button" class="section-title collapsible-toggle" aria-expanded="false">
+        <span class="title-left"><span class="icon">▥</span> JBSE6 Commissary Order</span>
+        <span class="collapse-chevron">⌄</span>
+      </button>
+      <div class="collapsible-content">
+        <div class="commissary-mobile-sheet">
+          <div class="commissary-mobile-head">
+            <div class="commissary-logo mini-logo"><span class="runner">➟</span>JEWBOY<br />sliders</div>
+            <div>
+              <div class="commissary-title">JBSE6 COMMISSARY ORDER</div>
+              <div class="commissary-subtitle">Track what is on hand at Burgers and Trailer</div>
+            </div>
+          </div>
+
+          <div class="commissary-view-tabs" aria-label="Commissary tracking lists">
+            <button type="button" class="commissary-view-btn active" data-comm-view="burgers">Burgers On Hand</button>
+            <button type="button" class="commissary-view-btn" data-comm-view="trailer">Trailer On Hand</button>
+          </div>
+
+          <div class="commissary-active-banner" id="commissaryActiveBanner">CURRENT SHEET: BURGERS ON HAND</div>
+
+          <div class="commissary-search-wrap">
+            <input id="commissarySearch" type="search" placeholder="Search Burgers on-hand list..." />
+          </div>
+
+          <div class="commissary-view-panel active" data-comm-panel="burgers">
+            <div class="commissary-list-heading">
+              <strong>Burgers On Hand</strong>
+              <span>Count what is currently at Burgers.</span>
+            </div>
+            <div class="commissary-card-list">
+            <article class="commissary-card" data-comm-index="0" data-comm-field="burgers" data-search="spicy ketchup 1 gallon / batch 12 qt&#x27;s 16 qt&#x27;s on hand">
+              <div class="product-fallback commissary-thumb">SK</div>
+              <div class="commissary-card-info">
+                <div class="commissary-card-title">Spicy Ketchup</div>
+                <div class="commissary-card-meta">Batch: 1 Gallon / Batch</div>
+                <div class="commissary-par-row">
+                  <span>Weekday: <strong>12 Qt&#x27;s</strong></span>
+                  <span>Weekend: <strong>16 Qt&#x27;s</strong></span>
+                </div>
+                <div class="commissary-card-meta commissary-purpose">Current count at Burgers</div>
+              </div>
+              <div class="commissary-card-order">
+                <span class="commissary-order-label">On Hand</span>
+                <div class="commissary-stepper" data-index="0" data-field="burgers">
+                  <button type="button" class="commissary-step-btn" data-action="minus" aria-label="Decrease On Hand">−</button>
+                  <span class="commissary-qty-value" id="commissaryBurgersValue0" data-value="0">0</span>
+                  <button type="button" class="commissary-step-btn" data-action="plus" aria-label="Increase On Hand">+</button>
+                  <input type="hidden" id="commissaryBurgers0" value="" />
+                </div>
+              </div>
+            </article>
+            <article class="commissary-card" data-comm-index="1" data-comm-field="burgers" data-search="hatch chile ranch 1 gallon / batch 4 qt&#x27;s 10 qt&#x27;s on hand">
+              <div class="product-fallback commissary-thumb">HR</div>
+              <div class="commissary-card-info">
+                <div class="commissary-card-title">Hatch Chile Ranch</div>
+                <div class="commissary-card-meta">Batch: 1 Gallon / Batch</div>
+                <div class="commissary-par-row">
+                  <span>Weekday: <strong>4 Qt&#x27;s</strong></span>
+                  <span>Weekend: <strong>10 Qt&#x27;s</strong></span>
+                </div>
+                <div class="commissary-card-meta commissary-purpose">Current count at Burgers</div>
+              </div>
+              <div class="commissary-card-order">
+                <span class="commissary-order-label">On Hand</span>
+                <div class="commissary-stepper" data-index="1" data-field="burgers">
+                  <button type="button" class="commissary-step-btn" data-action="minus" aria-label="Decrease On Hand">−</button>
+                  <span class="commissary-qty-value" id="commissaryBurgersValue1" data-value="0">0</span>
+                  <button type="button" class="commissary-step-btn" data-action="plus" aria-label="Increase On Hand">+</button>
+                  <input type="hidden" id="commissaryBurgers1" value="" />
+                </div>
+              </div>
+            </article>
+            <article class="commissary-card" data-comm-index="2" data-comm-field="burgers" data-search="asshole sauce 1 gallon / batch 2 qt&#x27;s 4 qt&#x27;s on hand">
+              <div class="product-fallback commissary-thumb">AS</div>
+              <div class="commissary-card-info">
+                <div class="commissary-card-title">Asshole Sauce</div>
+                <div class="commissary-card-meta">Batch: 1 Gallon / Batch</div>
+                <div class="commissary-par-row">
+                  <span>Weekday: <strong>2 Qt&#x27;s</strong></span>
+                  <span>Weekend: <strong>4 Qt&#x27;s</strong></span>
+                </div>
+                <div class="commissary-card-meta commissary-purpose">Current count at Burgers</div>
+              </div>
+              <div class="commissary-card-order">
+                <span class="commissary-order-label">On Hand</span>
+                <div class="commissary-stepper" data-index="2" data-field="burgers">
+                  <button type="button" class="commissary-step-btn" data-action="minus" aria-label="Decrease On Hand">−</button>
+                  <span class="commissary-qty-value" id="commissaryBurgersValue2" data-value="0">0</span>
+                  <button type="button" class="commissary-step-btn" data-action="plus" aria-label="Increase On Hand">+</button>
+                  <input type="hidden" id="commissaryBurgers2" value="" />
+                </div>
+              </div>
+            </article>
+            <article class="commissary-card" data-comm-index="3" data-comm-field="burgers" data-search="tomatillo salsa 1 quart / batch 1 qt 2 qt&#x27;s on hand">
+              <div class="product-fallback commissary-thumb">TS</div>
+              <div class="commissary-card-info">
+                <div class="commissary-card-title">Tomatillo Salsa</div>
+                <div class="commissary-card-meta">Batch: 1 Quart / Batch</div>
+                <div class="commissary-par-row">
+                  <span>Weekday: <strong>1 Qt</strong></span>
+                  <span>Weekend: <strong>2 Qt&#x27;s</strong></span>
+                </div>
+                <div class="commissary-card-meta commissary-purpose">Current count at Burgers</div>
+              </div>
+              <div class="commissary-card-order">
+                <span class="commissary-order-label">On Hand</span>
+                <div class="commissary-stepper" data-index="3" data-field="burgers">
+                  <button type="button" class="commissary-step-btn" data-action="minus" aria-label="Decrease On Hand">−</button>
+                  <span class="commissary-qty-value" id="commissaryBurgersValue3" data-value="0">0</span>
+                  <button type="button" class="commissary-step-btn" data-action="plus" aria-label="Increase On Hand">+</button>
+                  <input type="hidden" id="commissaryBurgers3" value="" />
+                </div>
+              </div>
+            </article>
+            <article class="commissary-card" data-comm-index="4" data-comm-field="burgers" data-search="mini latkes 1 half pan / batch 4 pans 7 pans on hand">
+              <div class="product-fallback commissary-thumb">ML</div>
+              <div class="commissary-card-info">
+                <div class="commissary-card-title">Mini Latkes</div>
+                <div class="commissary-card-meta">Batch: 1 Half Pan / Batch</div>
+                <div class="commissary-par-row">
+                  <span>Weekday: <strong>4 Pans</strong></span>
+                  <span>Weekend: <strong>7 Pans</strong></span>
+                </div>
+                <div class="commissary-card-meta commissary-purpose">Current count at Burgers</div>
+              </div>
+              <div class="commissary-card-order">
+                <span class="commissary-order-label">On Hand</span>
+                <div class="commissary-stepper" data-index="4" data-field="burgers">
+                  <button type="button" class="commissary-step-btn" data-action="minus" aria-label="Decrease On Hand">−</button>
+                  <span class="commissary-qty-value" id="commissaryBurgersValue4" data-value="0">0</span>
+                  <button type="button" class="commissary-step-btn" data-action="plus" aria-label="Increase On Hand">+</button>
+                  <input type="hidden" id="commissaryBurgers4" value="" />
+                </div>
+              </div>
+            </article>
+            <article class="commissary-card" data-comm-index="5" data-comm-field="burgers" data-search="bacon 1 third pan / batch 1 pan 1 pan on hand">
+              <div class="product-fallback commissary-thumb">BA</div>
+              <div class="commissary-card-info">
+                <div class="commissary-card-title">Bacon</div>
+                <div class="commissary-card-meta">Batch: 1 Third Pan / Batch</div>
+                <div class="commissary-par-row">
+                  <span>Weekday: <strong>1 Pan</strong></span>
+                  <span>Weekend: <strong>1 Pan</strong></span>
+                </div>
+                <div class="commissary-card-meta commissary-purpose">Current count at Burgers</div>
+              </div>
+              <div class="commissary-card-order">
+                <span class="commissary-order-label">On Hand</span>
+                <div class="commissary-stepper" data-index="5" data-field="burgers">
+                  <button type="button" class="commissary-step-btn" data-action="minus" aria-label="Decrease On Hand">−</button>
+                  <span class="commissary-qty-value" id="commissaryBurgersValue5" data-value="0">0</span>
+                  <button type="button" class="commissary-step-btn" data-action="plus" aria-label="Increase On Hand">+</button>
+                  <input type="hidden" id="commissaryBurgers5" value="" />
+                </div>
+              </div>
+            </article>
+            <article class="commissary-card" data-comm-index="6" data-comm-field="burgers" data-search="queso packs 1 bag / batch 4 bags 7 bags on hand">
+              <div class="product-fallback commissary-thumb">QP</div>
+              <div class="commissary-card-info">
+                <div class="commissary-card-title">Queso Packs</div>
+                <div class="commissary-card-meta">Batch: 1 Bag / Batch</div>
+                <div class="commissary-par-row">
+                  <span>Weekday: <strong>4 Bags</strong></span>
+                  <span>Weekend: <strong>7 Bags</strong></span>
+                </div>
+                <div class="commissary-card-meta commissary-purpose">Current count at Burgers</div>
+              </div>
+              <div class="commissary-card-order">
+                <span class="commissary-order-label">On Hand</span>
+                <div class="commissary-stepper" data-index="6" data-field="burgers">
+                  <button type="button" class="commissary-step-btn" data-action="minus" aria-label="Decrease On Hand">−</button>
+                  <span class="commissary-qty-value" id="commissaryBurgersValue6" data-value="0">0</span>
+                  <button type="button" class="commissary-step-btn" data-action="plus" aria-label="Increase On Hand">+</button>
+                  <input type="hidden" id="commissaryBurgers6" value="" />
+                </div>
+              </div>
+            </article>
+
+            </div>
+          </div>
+
+          <div class="commissary-view-panel" data-comm-panel="trailer">
+            <div class="commissary-list-heading">
+              <strong>Trailer On Hand</strong>
+              <span>Count what is currently at the Trailer.</span>
+            </div>
+            <div class="commissary-card-list">
+            <article class="commissary-card" data-comm-index="0" data-comm-field="trailer" data-search="spicy ketchup 1 gallon / batch 12 qt&#x27;s 16 qt&#x27;s on hand">
+              <div class="product-fallback commissary-thumb">SK</div>
+              <div class="commissary-card-info">
+                <div class="commissary-card-title">Spicy Ketchup</div>
+                <div class="commissary-card-meta">Batch: 1 Gallon / Batch</div>
+                <div class="commissary-par-row">
+                  <span>Weekday: <strong>12 Qt&#x27;s</strong></span>
+                  <span>Weekend: <strong>16 Qt&#x27;s</strong></span>
+                </div>
+                <div class="commissary-card-meta commissary-purpose">Current count at Trailer</div>
+              </div>
+              <div class="commissary-card-order">
+                <span class="commissary-order-label">On Hand</span>
+                <div class="commissary-stepper" data-index="0" data-field="trailer">
+                  <button type="button" class="commissary-step-btn" data-action="minus" aria-label="Decrease On Hand">−</button>
+                  <span class="commissary-qty-value" id="commissaryTrailerValue0" data-value="0">0</span>
+                  <button type="button" class="commissary-step-btn" data-action="plus" aria-label="Increase On Hand">+</button>
+                  <input type="hidden" id="commissaryTrailer0" value="" />
+                </div>
+              </div>
+            </article>
+            <article class="commissary-card" data-comm-index="1" data-comm-field="trailer" data-search="hatch chile ranch 1 gallon / batch 4 qt&#x27;s 10 qt&#x27;s on hand">
+              <div class="product-fallback commissary-thumb">HR</div>
+              <div class="commissary-card-info">
+                <div class="commissary-card-title">Hatch Chile Ranch</div>
+                <div class="commissary-card-meta">Batch: 1 Gallon / Batch</div>
+                <div class="commissary-par-row">
+                  <span>Weekday: <strong>4 Qt&#x27;s</strong></span>
+                  <span>Weekend: <strong>10 Qt&#x27;s</strong></span>
+                </div>
+                <div class="commissary-card-meta commissary-purpose">Current count at Trailer</div>
+              </div>
+              <div class="commissary-card-order">
+                <span class="commissary-order-label">On Hand</span>
+                <div class="commissary-stepper" data-index="1" data-field="trailer">
+                  <button type="button" class="commissary-step-btn" data-action="minus" aria-label="Decrease On Hand">−</button>
+                  <span class="commissary-qty-value" id="commissaryTrailerValue1" data-value="0">0</span>
+                  <button type="button" class="commissary-step-btn" data-action="plus" aria-label="Increase On Hand">+</button>
+                  <input type="hidden" id="commissaryTrailer1" value="" />
+                </div>
+              </div>
+            </article>
+            <article class="commissary-card" data-comm-index="2" data-comm-field="trailer" data-search="asshole sauce 1 gallon / batch 2 qt&#x27;s 4 qt&#x27;s on hand">
+              <div class="product-fallback commissary-thumb">AS</div>
+              <div class="commissary-card-info">
+                <div class="commissary-card-title">Asshole Sauce</div>
+                <div class="commissary-card-meta">Batch: 1 Gallon / Batch</div>
+                <div class="commissary-par-row">
+                  <span>Weekday: <strong>2 Qt&#x27;s</strong></span>
+                  <span>Weekend: <strong>4 Qt&#x27;s</strong></span>
+                </div>
+                <div class="commissary-card-meta commissary-purpose">Current count at Trailer</div>
+              </div>
+              <div class="commissary-card-order">
+                <span class="commissary-order-label">On Hand</span>
+                <div class="commissary-stepper" data-index="2" data-field="trailer">
+                  <button type="button" class="commissary-step-btn" data-action="minus" aria-label="Decrease On Hand">−</button>
+                  <span class="commissary-qty-value" id="commissaryTrailerValue2" data-value="0">0</span>
+                  <button type="button" class="commissary-step-btn" data-action="plus" aria-label="Increase On Hand">+</button>
+                  <input type="hidden" id="commissaryTrailer2" value="" />
+                </div>
+              </div>
+            </article>
+            <article class="commissary-card" data-comm-index="3" data-comm-field="trailer" data-search="tomatillo salsa 1 quart / batch 1 qt 2 qt&#x27;s on hand">
+              <div class="product-fallback commissary-thumb">TS</div>
+              <div class="commissary-card-info">
+                <div class="commissary-card-title">Tomatillo Salsa</div>
+                <div class="commissary-card-meta">Batch: 1 Quart / Batch</div>
+                <div class="commissary-par-row">
+                  <span>Weekday: <strong>1 Qt</strong></span>
+                  <span>Weekend: <strong>2 Qt&#x27;s</strong></span>
+                </div>
+                <div class="commissary-card-meta commissary-purpose">Current count at Trailer</div>
+              </div>
+              <div class="commissary-card-order">
+                <span class="commissary-order-label">On Hand</span>
+                <div class="commissary-stepper" data-index="3" data-field="trailer">
+                  <button type="button" class="commissary-step-btn" data-action="minus" aria-label="Decrease On Hand">−</button>
+                  <span class="commissary-qty-value" id="commissaryTrailerValue3" data-value="0">0</span>
+                  <button type="button" class="commissary-step-btn" data-action="plus" aria-label="Increase On Hand">+</button>
+                  <input type="hidden" id="commissaryTrailer3" value="" />
+                </div>
+              </div>
+            </article>
+            <article class="commissary-card" data-comm-index="4" data-comm-field="trailer" data-search="mini latkes 1 half pan / batch 4 pans 7 pans on hand">
+              <div class="product-fallback commissary-thumb">ML</div>
+              <div class="commissary-card-info">
+                <div class="commissary-card-title">Mini Latkes</div>
+                <div class="commissary-card-meta">Batch: 1 Half Pan / Batch</div>
+                <div class="commissary-par-row">
+                  <span>Weekday: <strong>4 Pans</strong></span>
+                  <span>Weekend: <strong>7 Pans</strong></span>
+                </div>
+                <div class="commissary-card-meta commissary-purpose">Current count at Trailer</div>
+              </div>
+              <div class="commissary-card-order">
+                <span class="commissary-order-label">On Hand</span>
+                <div class="commissary-stepper" data-index="4" data-field="trailer">
+                  <button type="button" class="commissary-step-btn" data-action="minus" aria-label="Decrease On Hand">−</button>
+                  <span class="commissary-qty-value" id="commissaryTrailerValue4" data-value="0">0</span>
+                  <button type="button" class="commissary-step-btn" data-action="plus" aria-label="Increase On Hand">+</button>
+                  <input type="hidden" id="commissaryTrailer4" value="" />
+                </div>
+              </div>
+            </article>
+            <article class="commissary-card" data-comm-index="5" data-comm-field="trailer" data-search="bacon 1 third pan / batch 1 pan 1 pan on hand">
+              <div class="product-fallback commissary-thumb">BA</div>
+              <div class="commissary-card-info">
+                <div class="commissary-card-title">Bacon</div>
+                <div class="commissary-card-meta">Batch: 1 Third Pan / Batch</div>
+                <div class="commissary-par-row">
+                  <span>Weekday: <strong>1 Pan</strong></span>
+                  <span>Weekend: <strong>1 Pan</strong></span>
+                </div>
+                <div class="commissary-card-meta commissary-purpose">Current count at Trailer</div>
+              </div>
+              <div class="commissary-card-order">
+                <span class="commissary-order-label">On Hand</span>
+                <div class="commissary-stepper" data-index="5" data-field="trailer">
+                  <button type="button" class="commissary-step-btn" data-action="minus" aria-label="Decrease On Hand">−</button>
+                  <span class="commissary-qty-value" id="commissaryTrailerValue5" data-value="0">0</span>
+                  <button type="button" class="commissary-step-btn" data-action="plus" aria-label="Increase On Hand">+</button>
+                  <input type="hidden" id="commissaryTrailer5" value="" />
+                </div>
+              </div>
+            </article>
+            <article class="commissary-card" data-comm-index="6" data-comm-field="trailer" data-search="queso packs 1 bag / batch 4 bags 7 bags on hand">
+              <div class="product-fallback commissary-thumb">QP</div>
+              <div class="commissary-card-info">
+                <div class="commissary-card-title">Queso Packs</div>
+                <div class="commissary-card-meta">Batch: 1 Bag / Batch</div>
+                <div class="commissary-par-row">
+                  <span>Weekday: <strong>4 Bags</strong></span>
+                  <span>Weekend: <strong>7 Bags</strong></span>
+                </div>
+                <div class="commissary-card-meta commissary-purpose">Current count at Trailer</div>
+              </div>
+              <div class="commissary-card-order">
+                <span class="commissary-order-label">On Hand</span>
+                <div class="commissary-stepper" data-index="6" data-field="trailer">
+                  <button type="button" class="commissary-step-btn" data-action="minus" aria-label="Decrease On Hand">−</button>
+                  <span class="commissary-qty-value" id="commissaryTrailerValue6" data-value="0">0</span>
+                  <button type="button" class="commissary-step-btn" data-action="plus" aria-label="Increase On Hand">+</button>
+                  <input type="hidden" id="commissaryTrailer6" value="" />
+                </div>
+              </div>
+            </article>
+
+            </div>
+          </div>
+
+          <div class="commissary-footer-card">
+            <label>Date Ordered
+              <input id="commissaryDateOrdered" class="commissary-footer-input" type="text" placeholder="MM/DD/YYYY" />
+            </label>
+            <label>MOD Signature
+              <input id="commissaryModSignature" class="commissary-footer-input" type="text" placeholder="Name" />
+            </label>
+          </div>
+        </div>
+        <div class="prep-preview-note">Commissary is split into two separate on-hand lists: Burgers and Trailer.</div>
+      </div>
+    </section>
+
+    <section class="section-card collapsible-section workflow-panel dashboard-panel s3-panel" data-section="to-be-prepped" data-default="open">
+      <button type="button" class="section-title collapsible-toggle" aria-expanded="false">
+        <span class="title-left"><span class="icon">▤</span> Prep List</span>
+        <span class="collapse-chevron">⌄</span>
+      </button>
+      <div class="collapsible-content">
+      <div class="prep-sheet">
+        <div class="prep-head">
+          <div class="prep-logo"><span class="runner">➟</span> JEWBOY<br />sliders</div>
+          <div class="prep-title">-PREP LIST-</div>
+          <div class="prep-lines">
+            <span>DATE:</span><span class="prep-line" id="prepDateLine"></span>
+            <span>SIGNATURE:</span><span class="prep-line"></span>
+          </div>
+        </div>
+        <table class="prep-table">
+          <thead>
+            <tr>
+              <th>Task</th>
+              <th class="done-cell">Done</th>
+              <th class="prep-qty-cell">To Prep</th>
+            </tr>
+          </thead>
+          <tbody id="prepListBody"></tbody>
+        </table>
+      </div>
+      <div class="prep-preview-note">Review shows only non-zero order items, grouped by location. Prep List saves and exports with the sheet.</div>
+      </div>
+    </section>
+
+    <section class="section-card entree-card collapsible-section workflow-panel dashboard-panel s4-panel" data-section="ben-e-keith" data-default="open">
+      <button type="button" class="section-title collapsible-toggle" aria-expanded="true">
+        <span class="title-left"><span class="icon">▦</span> Ben E. Keith Order</span>
+        <span class="collapse-chevron">⌄</span>
+      </button>
+      <div class="collapsible-content">
+        <div class="bek-sheet">
+          <div class="bek-head">
+            <div>
+              <div class="bek-title">Ben E. Keith Order</div>
+              <div class="bek-subtitle">Search items, enter on-hand if needed, and use + / − for order quantities.</div>
+            </div>
+            <div class="bek-mode-pill" id="bekModePill">Weekend</div>
+          </div>
+          <div class="bek-search-wrap">
+            <input id="bekSearch" type="search" placeholder="Search Ben E. Keith items..." />
+          </div>
+          <div class="bek-list" id="bekList"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-card collapsible-section workflow-panel dashboard-panel notes-panel" data-section="shift-notes" data-default="open">
+      <button type="button" class="section-title collapsible-toggle" aria-expanded="false">
+        <span class="title-left"><span class="icon">▣</span> Shift Notes</span>
+        <span class="collapse-chevron">⌄</span>
+      </button>
+      <div class="collapsible-content">
+        <textarea id="shiftNote" placeholder="Add notes about the shift, inventory, issues, or special instructions..."></textarea>
+      </div>
+    </section>
+
+    <div class="small-status" id="savedInfo">Saved sheets on this device: 0</div>
+  </main>
+
+  <div class="bottom-actions">
+    <button type="button" class="action-btn" id="saveBtn">Save</button>
+    <button type="button" class="action-btn gold" id="reviewBtn">Review</button>
+    <button type="button" class="action-btn" id="exportPrettyBtn">Export</button>
+  </div>
+
+  <div class="modal" id="sectionModal" aria-hidden="true">
+    <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="sectionTitle">
+      <div class="modal-header">
+        <div class="modal-title" id="sectionTitle">Walk-In</div>
+        <button type="button" class="modal-close" id="closeSectionBtn" aria-label="Close section">×</button>
+      </div>
+      <div class="search-wrap">
+        <input type="search" id="sectionSearch" placeholder="Search items..." />
+      </div>
+      <div class="item-list" id="itemList"></div>
+    </div>
+  </div>
+
+  <div class="modal" id="reviewModal" aria-hidden="true">
+    <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="reviewTitle">
+      <div class="modal-header">
+        <div class="modal-title" id="reviewTitle">Review Order</div>
+        <button type="button" class="modal-close" id="closeReviewBtn" aria-label="Close review">×</button>
+      </div>
+      <div class="review-list" id="reviewList"></div>
+      <div class="bottom-actions" style="position:static; transform:none; width:100%; max-width:none;">
+        <button type="button" class="action-btn" id="reviewSaveBtn">Save</button>
+        <button type="button" class="action-btn gold" id="reviewExportBtn">Export</button>
+        <button type="button" class="action-btn" id="reviewBackBtn">Back</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    var ITEMS = [
+  {
+    "item": "Beef case(60 lbs)",
+    "unit": "case",
+    "weekdayPar": 1.0,
+    "weekendPar": 2.0,
+    "increment": 1.0
+  },
+  {
+    "item": "American Cheese case(4 packs, 5 lb / pack)",
+    "unit": "case",
+    "weekdayPar": 1.5,
+    "weekendPar": 1.5,
+    "increment": 1.0
+  },
+  {
+    "item": "Pepperjack case(4 packs, 5 lb / pack)",
+    "unit": "case",
+    "weekdayPar": 1.5,
+    "weekendPar": 1.5,
+    "increment": 1.0
+  },
+  {
+    "item": "Diced Onions case(2 bags, 5 lb / bag)",
+    "unit": "case",
+    "weekdayPar": 1.5,
+    "weekendPar": 2.0,
+    "increment": 1.0
+  },
+  {
+    "item": "Green Chiles case(5 bags, 5 lb / bag)",
+    "unit": "bags",
+    "weekdayPar": 2.0,
+    "weekendPar": 2.0,
+    "increment": 1.0
+  },
+  {
+    "item": "Jalape\u00f1os case(10 lb)",
+    "unit": "case",
+    "weekdayPar": 0.5,
+    "weekendPar": 1.0,
+    "increment": null
+  },
+  {
+    "item": "Milk case(4 jugs, 1 gal / jug)",
+    "unit": "jug",
+    "weekdayPar": 0.5,
+    "weekendPar": 0.5,
+    "increment": 1.0
+  },
+  {
+    "item": "Sour Cream Pc case(100 count)",
+    "unit": "case",
+    "weekdayPar": 0.25,
+    "weekendPar": 0.25,
+    "increment": null
+  },
+  {
+    "item": "Fries case(6 bags, 4.5 lb / bag)",
+    "unit": "bags",
+    "weekdayPar": 60.0,
+    "weekendPar": 60.0,
+    "increment": 1.0
+  },
+  {
+    "item": "Mini Black & Whites case( 10 boxes, 8 count /box)",
+    "unit": "boxes",
+    "weekdayPar": 4.0,
+    "weekendPar": 4.0,
+    "increment": 1.0
+  },
+  {
+    "item": "Linen",
+    "unit": "bags",
+    "weekdayPar": 3.0,
+    "weekendPar": 3.0,
+    "increment": null
+  },
+  {
+    "item": "Linen bag",
+    "unit": "backup",
+    "weekdayPar": 1.0,
+    "weekendPar": 1.0,
+    "increment": null
+  },
+  {
+    "item": "Applesauce case(72 count)",
+    "unit": "case",
+    "weekdayPar": 0.25,
+    "weekendPar": 0.25,
+    "increment": null
+  },
+  {
+    "item": "Claude's case(4 jugs, 1 gal / jug)",
+    "unit": "jug",
+    "weekdayPar": 0.25,
+    "weekendPar": 1.0,
+    "increment": 4.0
+  },
+  {
+    "item": "Soy Sauce case(4 tubs, 1 gal / tub)",
+    "unit": "jug",
+    "weekdayPar": 0.25,
+    "weekendPar": 1.0,
+    "increment": null
+  },
+  {
+    "item": "Sweet Baby Ray's case(4 tubs, 1 gal / tub)",
+    "unit": "jug",
+    "weekdayPar": 1.0,
+    "weekendPar": 1.0,
+    "increment": null
+  },
+  {
+    "item": "Mayo Jugs case(4 tubs, 1 gal / tub)",
+    "unit": "jugs",
+    "weekdayPar": 4.0,
+    "weekendPar": 4.0,
+    "increment": 1.0
+  },
+  {
+    "item": "Ketchup Packets case(1000, 9GM / Pc)",
+    "unit": "case",
+    "weekdayPar": 0.25,
+    "weekendPar": 0.25,
+    "increment": null
+  },
+  {
+    "item": "Mayo Packets case(200 count)",
+    "unit": "case",
+    "weekdayPar": 0.25,
+    "weekendPar": 0.25,
+    "increment": null
+  },
+  {
+    "item": "Mustard Packets case(500 count)",
+    "unit": "case",
+    "weekdayPar": 0.25,
+    "weekendPar": 0.25,
+    "increment": null
+  },
+  {
+    "item": "Pepper Packets case(3 bags, 1000 / bag)",
+    "unit": "case",
+    "weekdayPar": 0.1,
+    "weekendPar": 0.1,
+    "increment": null
+  },
+  {
+    "item": "Salt Packets case(3 bags, 1000 / bag)",
+    "unit": "case",
+    "weekdayPar": 0.1,
+    "weekendPar": 0.1,
+    "increment": null
+  },
+  {
+    "item": "Black Pepper case(5 lb tub)",
+    "unit": "tub",
+    "weekdayPar": 0.25,
+    "weekendPar": 0.25,
+    "increment": null
+  },
+  {
+    "item": "Salt case(12 boxes, 3 lb / box)",
+    "unit": "boxes",
+    "weekdayPar": 6.0,
+    "weekendPar": 6.0,
+    "increment": 1.0
+  },
+  {
+    "item": "Pickles case(4 tubs, 1 gal / tub)",
+    "unit": "tubs",
+    "weekdayPar": 4.0,
+    "weekendPar": 4.0,
+    "increment": 1.0
+  },
+  {
+    "item": "Fried onion topper case( 6 bags/ 24 oz)",
+    "unit": "bags",
+    "weekdayPar": 4.0,
+    "weekendPar": 5.0,
+    "increment": 1.0
+  },
+  {
+    "item": "Frieds Jalps case( 10 / 1lb bag)",
+    "unit": "bags",
+    "weekdayPar": 3.0,
+    "weekendPar": 4.0,
+    "increment": 1.0
+  },
+  {
+    "item": "Buns tray(7 bags, 12 buns / bag)",
+    "unit": "tray",
+    "weekdayPar": 8.571428571428571,
+    "weekendPar": 14.285714285714286,
+    "increment": 1.0
+  },
+  {
+    "item": "Chips case (30 count)",
+    "unit": "box",
+    "weekdayPar": 1.5,
+    "weekendPar": 3.0,
+    "increment": 1.0
+  },
+  {
+    "item": "To-go Bags case(500 count)",
+    "unit": "backup",
+    "weekdayPar": 1.0,
+    "weekendPar": 1.0,
+    "increment": null
+  },
+  {
+    "item": "Clear Wrap case(1 roll)",
+    "unit": "roll",
+    "weekdayPar": 0.2,
+    "weekendPar": 0.2,
+    "increment": 1.0
+  },
+  {
+    "item": "Catering Boxes case (1 / 50 count)",
+    "unit": "boxes",
+    "weekdayPar": 20.0,
+    "weekendPar": 20.0,
+    "increment": null
+  },
+  {
+    "item": "Napkins case(12/350 sleeves)",
+    "unit": "sleeves",
+    "weekdayPar": 8.0,
+    "weekendPar": 8.0,
+    "increment": 1.0
+  },
+  {
+    "item": "Canola Oil case (35lbs jug)",
+    "unit": "jugs",
+    "weekdayPar": 3.0,
+    "weekendPar": 3.0,
+    "increment": null
+  },
+  {
+    "item": "9x6 Boxs case(200 count)",
+    "unit": "cases",
+    "weekdayPar": 3.0,
+    "weekendPar": 3.0,
+    "increment": null
+  },
+  {
+    "item": "8x8 Boxs case(200 count)",
+    "unit": "cases",
+    "weekdayPar": 3.0,
+    "weekendPar": 3.0,
+    "increment": null
+  },
+  {
+    "item": "Big Queso Containers case(5 sleeves, 48 / sleeve)",
+    "unit": "sleeves",
+    "weekdayPar": 3.0,
+    "weekendPar": 3.0,
+    "increment": 1.0
+  },
+  {
+    "item": "32oz/8oz Deli lids",
+    "unit": "sleeves",
+    "weekdayPar": 3.0,
+    "weekendPar": 3.0,
+    "increment": null
+  },
+  {
+    "item": "Portion Cups case(10 sleeves, 250 / sleeve)",
+    "unit": "case",
+    "weekdayPar": 0.25,
+    "weekendPar": 0.25,
+    "increment": null
+  },
+  {
+    "item": "Portion Cup Lids case(20 sleeves, 125 / sleeve)",
+    "unit": "case",
+    "weekdayPar": 0.25,
+    "weekendPar": 0.25,
+    "increment": null
+  },
+  {
+    "item": "Small Queso Containers case(10 sleeves, 250 / sleeve)",
+    "unit": "sleeves",
+    "weekdayPar": 3.0,
+    "weekendPar": 3.0,
+    "increment": 1.0
+  },
+  {
+    "item": "Small Queso Lids case(10 sleeves, 100 / sleeve)",
+    "unit": "sleeves",
+    "weekdayPar": 5.0,
+    "weekendPar": 5.0,
+    "increment": 1.0
+  },
+  {
+    "item": "Water Cups case(20 sleeves, 50 count)",
+    "unit": "sleeves",
+    "weekdayPar": 8.0,
+    "weekendPar": 8.0,
+    "increment": 1.0
+  },
+  {
+    "item": "Quart Containers case(10 sleeves, 24 / sleeve)",
+    "unit": "sleeves",
+    "weekdayPar": 3.0,
+    "weekendPar": 3.0,
+    "increment": 1.0
+  },
+  {
+    "item": "Mealkits case(250 count)",
+    "unit": "case",
+    "weekdayPar": 0.25,
+    "weekendPar": 0.25,
+    "increment": null
+  },
+  {
+    "item": "Bleach case(6 tubs, 1 gal / tub)",
+    "unit": "tub",
+    "weekdayPar": 1.0,
+    "weekendPar": 1.0,
+    "increment": 1.0
+  },
+  {
+    "item": "Multisheen case(2 tubs, 1 gal / tub)",
+    "unit": "tub",
+    "weekdayPar": 1.0,
+    "weekendPar": 1.0,
+    "increment": 1.0
+  },
+  {
+    "item": "Mopsolution case(2 tubs, 1 gal / tub)",
+    "unit": "tub",
+    "weekdayPar": 1.0,
+    "weekendPar": 1.0,
+    "increment": 1.0
+  },
+  {
+    "item": "Degreaser case(2 tubs, 1 gal / tub)",
+    "unit": "tub",
+    "weekdayPar": 1.0,
+    "weekendPar": 1.0,
+    "increment": 1.0
+  },
+  {
+    "item": "Sani-Quad case(2 tubs, 1 gal / tub)",
+    "unit": "tub",
+    "weekdayPar": 1.0,
+    "weekendPar": 1.0,
+    "increment": 1.0
+  },
+  {
+    "item": "Metal Scrubbies case(12 count)",
+    "unit": "box",
+    "weekdayPar": 1.0,
+    "weekendPar": 1.0,
+    "increment": null
+  },
+  {
+    "item": "Green Scrubbies case(20 count)",
+    "unit": "box",
+    "weekdayPar": 1.0,
+    "weekendPar": 1.0,
+    "increment": null
+  },
+  {
+    "item": "Paper Towells case(6 rolls, 700ft)",
+    "unit": "roll",
+    "weekdayPar": 0.2,
+    "weekendPar": 0.2,
+    "increment": 1.0
+  },
+  {
+    "item": "Label Stickers case(1 roll)",
+    "unit": "backup",
+    "weekdayPar": 1.0,
+    "weekendPar": 1.0,
+    "increment": null
+  },
+  {
+    "item": "Register Rolls case(50 count)",
+    "unit": "rolls",
+    "weekdayPar": 9.0,
+    "weekendPar": 9.0,
+    "increment": null
+  },
+  {
+    "item": "Bricks case(12 count)",
+    "unit": "bricks",
+    "weekdayPar": 3.0,
+    "weekendPar": 3.0,
+    "increment": null
+  },
+  {
+    "item": "Trash Bags case(8 rolls, 25 / roll)",
+    "unit": "case",
+    "weekdayPar": 0.375,
+    "weekendPar": 0.375,
+    "increment": 1.0
+  },
+  {
+    "item": "Hand Sanitizer case(4 count)",
+    "unit": "backup",
+    "weekdayPar": 1.0,
+    "weekendPar": 1.0,
+    "increment": null
+  },
+  {
+    "item": "Hand Soap case(4 count)",
+    "unit": "backup",
+    "weekdayPar": 1.0,
+    "weekendPar": 1.0,
+    "increment": null
+  },
+  {
+    "item": "X-Large Gloves case(10 boxes, 100 / box)",
+    "unit": "case",
+    "weekdayPar": 0.4,
+    "weekendPar": 0.4,
+    "increment": 1.0
+  },
+  {
+    "item": "Large Gloves case(10 boxes, 100 / box)",
+    "unit": "case",
+    "weekdayPar": 0.4,
+    "weekendPar": 0.4,
+    "increment": 1.0
+  },
+  {
+    "item": "Medium Gloves",
+    "unit": "case",
+    "weekdayPar": 0.3,
+    "weekendPar": 0.3,
+    "increment": 1.0
+  },
+  {
+    "item": "Patty Wax case(12 boxes, 500 / box)",
+    "unit": "case",
+    "weekdayPar": 0.3333333333333333,
+    "weekendPar": 0.3333333333333333,
+    "increment": 1.0
+  },
+  {
+    "item": "Water case(24 ct / .5 ltr)",
+    "unit": "cases",
+    "weekdayPar": 4.0,
+    "weekendPar": 4.0,
+    "increment": null
+  },
+  {
+    "item": "Mexican Coke case(24 ct / 12 oz)",
+    "unit": "cases",
+    "weekdayPar": 2.0,
+    "weekendPar": 3.0,
+    "increment": null
+  },
+  {
+    "item": "Mexican Sprite case( 24 ct/ 12oz)",
+    "unit": "cases",
+    "weekdayPar": 2.0,
+    "weekendPar": 2.0,
+    "increment": null
+  },
+  {
+    "item": "Topo case(24 count)",
+    "unit": "cases",
+    "weekdayPar": 2.0,
+    "weekendPar": 2.0,
+    "increment": null
+  },
+  {
+    "item": "Bacon 1/3 pan",
+    "unit": "pan",
+    "weekdayPar": 0.5,
+    "weekendPar": 0.75,
+    "increment": 0.3333333333333333
+  },
+  {
+    "item": "Queso 1 bag",
+    "unit": "queso's",
+    "weekdayPar": 3.0,
+    "weekendPar": 4.0,
+    "increment": null
+  },
+  {
+    "item": "Mini Latkes 1/2 pan",
+    "unit": "half pans",
+    "weekdayPar": 3.0,
+    "weekendPar": 5.0,
+    "increment": null
+  },
+  {
+    "item": "Hatch Chile Ranch 4 qt's",
+    "unit": "qt's",
+    "weekdayPar": 4.0,
+    "weekendPar": 7.0,
+    "increment": 1.0
+  },
+  {
+    "item": "Spicy Ketchup 6 qt\"s",
+    "unit": "qt's",
+    "weekdayPar": 12.0,
+    "weekendPar": 15.0,
+    "increment": 1.0
+  },
+  {
+    "item": "Asshole sauce 2 qt's",
+    "unit": "qt's",
+    "weekdayPar": 2.0,
+    "weekendPar": 3.0,
+    "increment": 1.0
+  },
+  {
+    "item": "Tomatillo Salsa 1 quart",
+    "unit": "qt",
+    "weekdayPar": 1.0,
+    "weekendPar": 2.0,
+    "increment": 1.0
+  }
+];
+
+    var BRANDING = {
+      restaurantName: "JewBoy Sliders",
+      locationName: "East Sixth",
+      logoUrl: "",
+      accentColor: "#d4a017",
+      highlightColor: "#facc15"
+    };
+
+    var STORAGE_KEY = "jbs_order_history_v2";
+    var IMAGE_BASE_PATH = "images/";
+
+    // Upload product images to /images/ in GitHub, then use these simple filenames.
+    var PRODUCT_IMAGE_RULES = [
+      { match: "soy sauce", file: "soy-sauce.png" },
+      { match: "frieds jalps", file: "fried-jalps.png" },
+      { match: "fried onion topper", file: "fried-onion-topper.png" },
+      { match: "to-go bags", file: "to-go-bags.png" },
+      { match: "catering boxes", file: "catering-boxes.png" },
+      { match: "32oz/8oz deli lids", file: "32oz-8oz-deli-lids.png" },
+      { match: "portion cups", file: "portion-cups.png" },
+      { match: "water cups", file: "water-cups.png" },
+      { match: "bleach", file: "bleach.png" },
+      { match: "multisheen", file: "multisheen.png" },
+      { match: "mopsolution", file: "mopsolution.png" },
+      { match: "degreaser", file: "degreaser.png" },
+      { match: "clear wrap", file: "clear-wrap.png" },
+      { match: "x-large gloves", file: "gloves.png" },
+      { match: "large gloves", file: "gloves.png" },
+      { match: "medium gloves", file: "gloves.png" },
+      { match: "bricks", file: "grill-bricks.png" },
+      { match: "label stickers", file: "label-stickers.png" },
+      { match: "trash bags", file: "trash-bags.png" },
+      { match: "green scrubbies", file: "green-scrubbies.png" },
+      { match: "mexican coke", file: "mexican-coke.png" }
+    ];
+
+    function productImageForItem(name) {
+      var s = String(name || "").toLowerCase();
+      for (var i = 0; i < PRODUCT_IMAGE_RULES.length; i++) {
+        if (s.indexOf(PRODUCT_IMAGE_RULES[i].match) !== -1) {
+          return IMAGE_BASE_PATH + PRODUCT_IMAGE_RULES[i].file;
+        }
+      }
+      return "";
+    }
+
+    function assignLocationForItem(name) {
+      var s = (name || "").toLowerCase();
+      function has(term) {
+        return s.indexOf(term) !== -1;
+      }
+
+      // Walk-In
+      if (has("beef")) return "Walk-In";
+      if (has("american cheese")) return "Walk-In";
+      if (has("pepperjack")) return "Walk-In";
+      if (has("diced onions")) return "Walk-In";
+      if (has("green chiles")) return "Walk-In";
+      if (has("jalape")) return "Walk-In";
+      if (has("sour cream pc")) return "Walk-In";
+      if (has("bacon")) return "Walk-In";
+      if (has("queso 1 bag")) return "Walk-In";
+      if (has("mini latkes")) return "Walk-In";
+
+      // Shed
+      if (has("x-large gloves")) return "Shed";
+      if (has("large gloves")) return "Shed";
+      if (has("medium gloves")) return "Shed";
+      if (has("patty wax")) return "Shed";
+      if (has("water case")) return "Shed";
+      if (has("mexican coke")) return "Shed";
+      if (has("mexican sprite")) return "Shed";
+      if (has("topo")) return "Shed";
+      if (has("canola oil")) return "Shed";
+      if (has("9x6 boxs")) return "Shed";
+      if (has("8x8 boxs")) return "Shed";
+      if (has("big queso containers")) return "Shed";
+      if (has("small queso containers")) return "Shed";
+      if (has("small queso lids")) return "Shed";
+      if (has("water cups")) return "Shed";
+      if (has("quart containers")) return "Shed";
+      if (has("portion cups")) return "Shed";
+      if (has("portion cup lids")) return "Shed";
+      if (has("32oz/8oz deli lids")) return "Shed";
+      if (has("mealkits")) return "Shed";
+
+      // Grey Locker
+      if (has("bleach")) return "Grey Locker";
+      if (has("mopsolution")) return "Grey Locker";
+      if (has("degreaser")) return "Grey Locker";
+      if (has("sani-quad")) return "Grey Locker";
+      if (has("bricks")) return "Grey Locker";
+      if (has("trash bags")) return "Grey Locker";
+      if (has("hand sanitizer")) return "Grey Locker";
+      if (has("hand soap")) return "Grey Locker";
+      if (has("multisheen")) return "Grey Locker";
+
+      // Truck
+      if (has("milk case")) return "Truck";
+      if (has("fries case")) return "Truck";
+      if (has("mini black & whites")) return "Truck";
+      if (has("linen bag")) return "Truck";
+      if (has("linen") && !has("bag")) return "Truck";
+      if (has("applesauce")) return "Truck";
+      if (has("claude's")) return "Truck";
+      if (has("soy sauce")) return "Truck";
+      if (has("sweet baby ray")) return "Truck";
+      if (has("mayo jugs")) return "Truck";
+      if (has("ketchup packets")) return "Truck";
+      if (has("mayo packets")) return "Truck";
+      if (has("mustard packets")) return "Truck";
+      if (has("pepper packets")) return "Truck";
+      if (has("salt packets")) return "Truck";
+      if (has("black pepper")) return "Truck";
+      if (has("salt case")) return "Truck";
+      if (has("pickles case")) return "Truck";
+      if (has("chips case")) return "Truck";
+      if (has("fried onion topper")) return "Truck";
+      if (has("frieds jalps")) return "Truck";
+      if (has("buns tray")) return "Truck";
+      if (has("to-go bags")) return "Truck";
+      if (has("clear wrap")) return "Truck";
+      if (has("catering boxes")) return "Truck";
+      if (has("napkins case")) return "Truck";
+      if (has("metal scrubbies")) return "Truck";
+      if (has("green scrubbies")) return "Truck";
+      if (has("paper towells")) return "Truck";
+      if (has("label stickers")) return "Truck";
+      if (has("register rolls")) return "Truck";
+      if (has("hatch chile ranch")) return "Truck";
+      if (has("spicy ketchup")) return "Truck";
+      if (has("asshole sauce")) return "Truck";
+      if (has("tomatillo salsa")) return "Truck";
+
+      return "Other";
+    }
+
+    var LOCATION_ORDER = ["Walk-In", "Shed", "Grey Locker", "Truck", "Other"];
+
+    ITEMS.forEach(function(item) {
+      item.location = assignLocationForItem(item.item || "");
+    });
+
+    var VISIBLE_LOCATIONS = ["Walk-In", "Shed", "Grey Locker", "Truck"];
+    var LOCATION_ICONS = {
+      "Walk-In": "♙",
+      "Shed": "▤",
+      "Grey Locker": "▥",
+      "Truck": "▰"
+    };
+
+    var DAILY_TASKS = {
+      daily: {
+        label: "Daily Order List",
+        type: "section",
+        section: "ordering"
+      },
+      commissary: {
+        label: "JBSE6 Commissary Order",
+        type: "section",
+        section: "commissary-order"
+      },
+      prep: {
+        label: "Prep List",
+        type: "section",
+        section: "to-be-prepped"
+      },
+      tortilla: {
+        label: "Fiesta Tortilla Chips Order",
+        type: "manual"
+      }
+    };
+
+    var WEEKLY_ORDER_SCHEDULE = {
+      Monday: ["daily", "prep"],
+      Tuesday: ["daily", "commissary", "prep"],
+      Wednesday: ["daily", "prep"],
+      Thursday: ["daily", "commissary", "prep"],
+      Friday: ["daily", "prep"],
+      Saturday: ["daily", "prep"],
+      Sunday: ["daily", "commissary"]
+    };
+
+    var DAILY_STATUS_STORAGE_KEY = "jbs_daily_order_status_v1";
+
+    var guidedCurrentIndex = 0;
+
+    var PREP_TASKS = [
+      { task: "TRAYS OF BEEF", gray: false, responseType: "number" },
+      { task: "AMERICAN CHEESE", gray: false, responseType: "number" },
+      { task: "PEPPER JACK CHEESE", gray: false, responseType: "number" },
+      { task: "SPICY KETCHUP", gray: false, responseType: "number" },
+      { task: "SMOKEY MAYO", gray: false, responseType: "number" },
+      { task: "CUT JALEPANOS", gray: false, responseType: "yesno" },
+      { task: "REFILL SAUCE BOTTLES", gray: false, responseType: "yesno" },
+      { task: "CHANGE OIL", gray: true, responseType: "yesno" },
+      { task: "REFILL WATER", gray: true, responseType: "yesno" },
+      { task: "BRICK GRILL", gray: true, responseType: "yesno" },
+      { task: "WATER PLANTS", gray: true, responseType: "yesno" }
+    ];
+
+    var COMMISSARY_ITEMS = [
+      { item: "Spicy Ketchup", batchSize: "1 Gallon / Batch", weekdayPar: "12 Qt's", weekendPar: "16 Qt's" },
+      { item: "Hatch Chile Ranch", batchSize: "1 Gallon / Batch", weekdayPar: "4 Qt's", weekendPar: "10 Qt's" },
+      { item: "Asshole Sauce", batchSize: "1 Gallon / Batch", weekdayPar: "2 Qt's", weekendPar: "4 Qt's" },
+      { item: "Tomatillo Salsa", batchSize: "1 Quart / Batch", weekdayPar: "1 Qt", weekendPar: "2 Qt's" },
+      { item: "Mini Latkes", batchSize: "1 Half Pan / Batch", weekdayPar: "4 Pans", weekendPar: "7 Pans" },
+      { item: "Bacon", batchSize: "1 Third Pan / Batch", weekdayPar: "1 Pan", weekendPar: "1 Pan" },
+      { item: "Queso Packs", batchSize: "1 Bag / Batch", weekdayPar: "4 Bags", weekendPar: "7 Bags" }
+    ];
+
+    var BEK_ITEMS = [
+      {
+            "category": "Cold Food",
+            "itemNo": "504766",
+            "jbsName": "Beef Ground Chuck Angus Choice",
+            "name": "Beef",
+            "brand": "CreekStone Farm",
+            "caseSize": "6 / 10lb / chub",
+            "weekdayPar": "120 lbs",
+            "weekendPar": "180 lbs"
+      },
+      {
+            "category": "Cold Food",
+            "itemNo": "735025",
+            "jbsName": "Cheese American Sliced 120 Ct",
+            "name": "American Cheese",
+            "brand": "Golden Harvest",
+            "caseSize": "case(4 packs, 5 lb / pack)",
+            "weekdayPar": "2 case",
+            "weekendPar": "2 cases"
+      },
+      {
+            "category": "Cold Food",
+            "itemNo": "222265",
+            "jbsName": "Cheese Pepperjack 120 Slice",
+            "name": "Pepperjack",
+            "brand": "Bongards Creameries",
+            "caseSize": "case(4 packs, 5 lb / pack)",
+            "weekdayPar": "2 case",
+            "weekendPar": "2 cases"
+      },
+      {
+            "category": "Cold Food",
+            "itemNo": "115780*",
+            "jbsName": "Milk Whole Non Homogenized",
+            "name": "Milk",
+            "brand": "Milk-king",
+            "caseSize": "case(4 jugs, 1 gal / jug)",
+            "weekdayPar": ".5 jug (trailer)",
+            "weekendPar": ".75 jug (trailer)"
+      },
+      {
+            "category": "Cold Food",
+            "itemNo": "669005",
+            "jbsName": "Sour Cream Pc",
+            "name": "Sour Cream Pc",
+            "brand": "Daisy Brands",
+            "caseSize": "case(100 count)",
+            "weekdayPar": ".25 case (trailer)",
+            "weekendPar": ".25 case (trailer)"
+      },
+      {
+            "category": "Cold Food",
+            "itemNo": "132253",
+            "jbsName": "Chile Greenhatch Diced Holiday",
+            "name": "Green Chiles",
+            "brand": "Yung Guns Produce",
+            "caseSize": "case(5 bags, 5 lb / bag)",
+            "weekdayPar": "2 bags",
+            "weekendPar": "2 bags"
+      },
+      {
+            "category": "Cold Food",
+            "itemNo": "177584*",
+            "jbsName": "Onion Yellow Diced 1/8 in",
+            "name": "Diced Onions",
+            "brand": "Lipman",
+            "caseSize": "case(2 bags, 5 lb / bag)",
+            "weekdayPar": "2 cases",
+            "weekendPar": "3 cases"
+      },
+      {
+            "category": "Cold Food",
+            "itemNo": "180816",
+            "jbsName": "Pepper Jalapeno",
+            "name": "Jalapeños",
+            "brand": "Markon First Crop",
+            "caseSize": "case(10 lb)",
+            "weekdayPar": "1 case",
+            "weekendPar": "2 case"
+      },
+      {
+            "category": "Cold Food",
+            "itemNo": "162927",
+            "jbsName": "French Fries Ss 1/4 In",
+            "name": "Fries",
+            "brand": "Crispy Coat",
+            "caseSize": "case(6 bags, 4.5 lb / bag)",
+            "weekdayPar": "14 cases",
+            "weekendPar": "18 cases"
+      },
+      {
+            "category": "Cold Food",
+            "itemNo": "176961",
+            "jbsName": "Cookie Mini Black and White**",
+            "name": "Black and Whites",
+            "brand": "Superior",
+            "caseSize": "case(12 / 10 cnt box)",
+            "weekdayPar": "8 boxes",
+            "weekendPar": "8 boxes"
+      },
+      {
+            "category": "Dry Food",
+            "itemNo": "600038",
+            "jbsName": "Applesauce Regular Ind Cup",
+            "name": "Applesauce",
+            "brand": "Musselman's",
+            "caseSize": "case(72 count)",
+            "weekdayPar": "1 case",
+            "weekendPar": "1 case"
+      },
+      {
+            "category": "Dry Food",
+            "itemNo": "660015",
+            "jbsName": "Claudes BBQ Brisket Marinade",
+            "name": "Claudes",
+            "brand": "Claudes",
+            "caseSize": "case(4 jugs, 1 gal / jug)",
+            "weekdayPar": "2 jugs",
+            "weekendPar": "2 jugs"
+      },
+      {
+            "category": "Dry Food",
+            "itemNo": "674039",
+            "jbsName": "Ketchup Pc Pouch 9 Gram",
+            "name": "Ketchup Packets",
+            "brand": "Hunt's",
+            "caseSize": "case(1000, 9GM / Pc)",
+            "weekdayPar": "1 case",
+            "weekendPar": "1 case"
+      },
+      {
+            "category": "Dry Food",
+            "itemNo": "119451",
+            "jbsName": "Mayonnaise Extra Heavy Duty",
+            "name": "Mayo Jugs",
+            "brand": "Ellington Farms",
+            "caseSize": "case(4 tubs, 1 gal / tub)",
+            "weekdayPar": "2 cases",
+            "weekendPar": "2 cases"
+      },
+      {
+            "category": "Dry Food",
+            "itemNo": "674059",
+            "jbsName": "Mayonnaise Pc Foil Pack",
+            "name": "Mayo Packets",
+            "brand": "Heinz",
+            "caseSize": "case(200 count)",
+            "weekdayPar": "1 case",
+            "weekendPar": "1 case"
+      },
+      {
+            "category": "Dry Food",
+            "itemNo": "160130",
+            "jbsName": "Mustard Pc Packet 500 Ct",
+            "name": "Mustard Packets",
+            "brand": "French's",
+            "caseSize": "case(500 count)",
+            "weekdayPar": "1 case",
+            "weekendPar": "1 case"
+      },
+      {
+            "category": "Dry Food",
+            "itemNo": "779178",
+            "jbsName": "Oil Canola Clear Fry",
+            "name": "Canola Oil",
+            "brand": "Keith's Homestyle",
+            "caseSize": "case(35 lb jug)",
+            "weekdayPar": "6 jugs",
+            "weekendPar": "6 jugs"
+      },
+      {
+            "category": "Dry Food",
+            "itemNo": "650262",
+            "jbsName": "Onion French Fried Onion Ring",
+            "name": "Fried Onion topper",
+            "brand": "French's",
+            "caseSize": "case (6 / 24 oz)",
+            "weekdayPar": "1 case",
+            "weekendPar": "1 case"
+      },
+      {
+            "category": "Dry Food",
+            "itemNo": "128173",
+            "jbsName": "Pepper Black Coarse Grind",
+            "name": "Black Pepper",
+            "brand": "Spice Classics",
+            "caseSize": "case(5 lb tub)",
+            "weekdayPar": "1 tub",
+            "weekendPar": "1 tub"
+      },
+      {
+            "category": "Dry Food",
+            "itemNo": "676006",
+            "jbsName": "Pepper Pc Pouch",
+            "name": "Pepper Packets",
+            "brand": "Keith",
+            "caseSize": "case(3 bags, 1000 / bag)",
+            "weekdayPar": ".25 case",
+            "weekendPar": ".25 case"
+      },
+      {
+            "category": "Dry Food",
+            "itemNo": "680099",
+            "jbsName": "Pickle Dill Sl Hamb Cc 1/8in",
+            "name": "Pickles",
+            "brand": "Cajun Chef",
+            "caseSize": "case(4 tubs, 1 gal / tub)",
+            "weekdayPar": "1 case",
+            "weekendPar": "1.5 case"
+      },
+      {
+            "category": "Dry Food",
+            "itemNo": "676182",
+            "jbsName": "Salt Kosher Coarse Box",
+            "name": "Salt",
+            "brand": "Morton Salt Company",
+            "caseSize": "case(12 boxes, 3 lb / box)",
+            "weekdayPar": "4 boxes",
+            "weekendPar": "4 boxes"
+      },
+      {
+            "category": "Dry Food",
+            "itemNo": "676007",
+            "jbsName": "Salt Pc Pouch",
+            "name": "Salt Packets",
+            "brand": "Keith",
+            "caseSize": "case(3 bags, 1000 / bag)",
+            "weekdayPar": ".25 case",
+            "weekendPar": ".25 case"
+      },
+      {
+            "category": "Dry Food",
+            "itemNo": "111922",
+            "jbsName": "Sauce Bbq Sweet Baby Rays",
+            "name": "Sweet Baby Ray's",
+            "brand": "Sweet Baby Ray's",
+            "caseSize": "case (4 / 1 gal)",
+            "weekdayPar": "1 jug",
+            "weekendPar": "1 jug"
+      },
+      {
+            "category": "Dry Food",
+            "itemNo": "661096",
+            "jbsName": "Sauce Soy",
+            "name": "Soy Sauce",
+            "brand": "Kikkoman",
+            "caseSize": "case(4 tubs, 1 gal / tub)",
+            "weekdayPar": "1 jug",
+            "weekendPar": "1 jug"
+      },
+      {
+            "category": "Dry Food",
+            "itemNo": "699118",
+            "jbsName": "Topping Jalapeño Crispy Strip",
+            "name": "Crispy Jalapenos",
+            "brand": "Fresh Gourmet",
+            "caseSize": "case (10 / 1 Lb)",
+            "weekdayPar": "1 case",
+            "weekendPar": "1 case"
+      },
+      {
+            "category": "Disposables",
+            "itemNo": "875096",
+            "jbsName": "Bag Plas To Go Royal Wave Top",
+            "name": "To-go Bags",
+            "brand": "Royal Paper Products",
+            "caseSize": "case(500 count)",
+            "weekdayPar": "1 case",
+            "weekendPar": "1 case"
+      },
+      {
+            "category": "Disposables",
+            "itemNo": "199395",
+            "jbsName": "Cont Paper Hngd 1-c 9x6",
+            "name": "9x6 Boxes",
+            "brand": "Solo Cup Company",
+            "caseSize": "case(200 count)",
+            "weekdayPar": "3 cases",
+            "weekendPar": "3 cases"
+      },
+      {
+            "category": "Disposables",
+            "itemNo": "104322",
+            "jbsName": "Cont Paper Hngd 1-c 8x8",
+            "name": "8x8 Boxes",
+            "brand": "Eco Products",
+            "caseSize": "case(200 count)",
+            "weekdayPar": "3 cases",
+            "weekendPar": "3 cases"
+      },
+      {
+            "category": "Disposables",
+            "itemNo": "136769",
+            "jbsName": "Box Catering Half Pan White**",
+            "name": "Catering Boxes",
+            "brand": "Royal Paper Products",
+            "caseSize": "case(50 Boxes)",
+            "weekdayPar": "1 case",
+            "weekendPar": "1 case"
+      },
+      {
+            "category": "Disposables",
+            "itemNo": "819019",
+            "jbsName": "Cont Plas Deli 8 Oz Combo Pk",
+            "name": "Big Queso Containers",
+            "brand": "Newspring",
+            "caseSize": "case(5 sleeves, 48 / sleeve)",
+            "weekdayPar": "3 sleeves",
+            "weekendPar": "3 sleeves"
+      },
+      {
+            "category": "Disposables",
+            "itemNo": "164033",
+            "jbsName": "Cup Plas Souffle 1 Oz",
+            "name": "Portion Cups",
+            "brand": "Karat",
+            "caseSize": "case(50 sleeves, 50 / sleeve)",
+            "weekdayPar": "1 case",
+            "weekendPar": "1 case"
+      },
+      {
+            "category": "Disposables",
+            "itemNo": "130860",
+            "jbsName": "Lid Plas F/ 1-2 Oz Cup",
+            "name": "Portion Cup Lids",
+            "brand": "Karat",
+            "caseSize": "case(50 sleeves, 50 / sleeve)",
+            "weekdayPar": "1 case",
+            "weekendPar": "1 case"
+      },
+      {
+            "category": "Disposables",
+            "itemNo": "109662",
+            "jbsName": "Cont Paper 5oz White",
+            "name": "Small Queso Containers",
+            "brand": "Karat",
+            "caseSize": "case(1 case, 1000 CT)",
+            "weekdayPar": "1 case",
+            "weekendPar": "1 case"
+      },
+      {
+            "category": "Disposables",
+            "itemNo": "104428",
+            "jbsName": "Lid Plas Flat for 5oz Cont",
+            "name": "Small Queso Lids",
+            "brand": "Karat",
+            "caseSize": "case(1 case, 1000 CT)",
+            "weekdayPar": "1 case",
+            "weekendPar": "1 case"
+      },
+      {
+            "category": "Disposables",
+            "itemNo": "104169",
+            "jbsName": "Cup Plas 10 Oz Ultra Clear",
+            "name": "Water Cups",
+            "brand": "Ultra Clear",
+            "caseSize": "case(20 sleeve / 50 sleeve)",
+            "weekdayPar": "5 sleeves",
+            "weekendPar": "5 sleeves"
+      },
+      {
+            "category": "Disposables",
+            "itemNo": "162196",
+            "jbsName": "Meal Kit K F S nap S&p Mw Blk",
+            "name": "Mealkits",
+            "brand": "Wallace Packaging Llc",
+            "caseSize": "case(250 count)",
+            "weekdayPar": "1 case",
+            "weekendPar": "1 case"
+      },
+      {
+            "category": "Disposables",
+            "itemNo": "880020",
+            "jbsName": "Napkin Dinner 15x17 White",
+            "name": "Napkins",
+            "brand": "Dixie",
+            "caseSize": "case(12 sleeves / 350 sleeve)",
+            "weekdayPar": "6 sleeves",
+            "weekendPar": "6 sleeves"
+      },
+      {
+            "category": "Disposables",
+            "itemNo": "166062",
+            "jbsName": "Paper Deli Wrap Wax 8x10.75in",
+            "name": "Patty Wax",
+            "brand": "Logan",
+            "caseSize": "case(12 boxes, 500 / box)",
+            "weekdayPar": "1 case",
+            "weekendPar": "1 case"
+      },
+      {
+            "category": "Supplies",
+            "itemNo": "144183",
+            "jbsName": "Bleach Keith Ultra",
+            "name": "Bleach",
+            "brand": "Essentials",
+            "caseSize": "case(6 tubs, 1 gal / tub)",
+            "weekdayPar": "1 jug",
+            "weekendPar": "1 jug"
+      },
+      {
+            "category": "Supplies",
+            "itemNo": "885090",
+            "jbsName": "Cleaner Multisheen Moprite",
+            "name": "Multisheen",
+            "brand": "Ssdc",
+            "caseSize": "case(2 tubs, 1 gal / tub)",
+            "weekdayPar": "1 jug",
+            "weekendPar": "1 jug"
+      },
+      {
+            "category": "Supplies",
+            "itemNo": "885224",
+            "jbsName": "Cleaner Track Moprite",
+            "name": "Mopsolution",
+            "brand": "Ssdc",
+            "caseSize": "case(2 tubs, 1 gal / tub)",
+            "weekdayPar": "1 jug",
+            "weekendPar": "1 jug"
+      },
+      {
+            "category": "Supplies",
+            "itemNo": "885818",
+            "jbsName": "Degreaser Inside Out Moprite",
+            "name": "Degreaser",
+            "brand": "Ssdc",
+            "caseSize": "case(2 tubs, 1 gal / tub)",
+            "weekdayPar": "1 jug",
+            "weekendPar": "1 jug"
+      },
+      {
+            "category": "Supplies",
+            "itemNo": "819143",
+            "jbsName": "Cont Plas Deli 32 Oz Combo",
+            "name": "Quart Containers",
+            "brand": "Newspring",
+            "caseSize": "case(10 sleeves, 24 / sleeve)",
+            "weekdayPar": "3 sleeves",
+            "weekendPar": "3 sleeves"
+      },
+      {
+            "category": "Supplies",
+            "itemNo": "887008",
+            "jbsName": "Film 18x2000 Clear Wrap",
+            "name": "Clear Wrap",
+            "brand": "Reynolds",
+            "caseSize": "case(1 roll)",
+            "weekdayPar": "1 roll",
+            "weekendPar": "1 roll"
+      },
+      {
+            "category": "Supplies",
+            "itemNo": "116134",
+            "jbsName": "Glove Nitrile Purple Xl Pf",
+            "name": "X-Large Gloves",
+            "brand": "Essentials",
+            "caseSize": "case(10 boxes, 100 / box)",
+            "weekdayPar": "1 case",
+            "weekendPar": "1 case"
+      },
+      {
+            "category": "Supplies",
+            "itemNo": "116133",
+            "jbsName": "Glove Nitrile Purple Lg Pf",
+            "name": "Large Gloves",
+            "brand": "Essentials",
+            "caseSize": "case(10 boxes, 100 / box)",
+            "weekdayPar": "1 case",
+            "weekendPar": "1 case"
+      },
+      {
+            "category": "Supplies",
+            "itemNo": "116132",
+            "jbsName": "Glove Nitrile Purple Med PF",
+            "name": "Medium Gloves",
+            "brand": "Essentials",
+            "caseSize": "case(10 boxes, 100 / box)",
+            "weekdayPar": "3 boxes",
+            "weekendPar": "3 boxes"
+      },
+      {
+            "category": "Supplies",
+            "itemNo": "888060",
+            "jbsName": "Grill Brick Wrapped",
+            "name": "Bricks",
+            "brand": "Essentials",
+            "caseSize": "case(12 count)",
+            "weekdayPar": "3 bricks",
+            "weekendPar": "3 bricks"
+      },
+      {
+            "category": "Supplies",
+            "itemNo": "153307",
+            "jbsName": "Label 2x3 Durapeel Generic",
+            "name": "Label Stickers",
+            "brand": "DayDots",
+            "caseSize": "case(1 roll)",
+            "weekdayPar": "1 rolls",
+            "weekendPar": "1 rolls"
+      },
+      {
+            "category": "Supplies",
+            "itemNo": "879106",
+            "jbsName": "Liner Trash 60 Gal Black",
+            "name": "Trash Bags",
+            "brand": "Berry Plastics",
+            "caseSize": "case(8 rolls, 25 / roll)",
+            "weekdayPar": "1 case",
+            "weekendPar": "1 case"
+      },
+      {
+            "category": "Supplies",
+            "itemNo": "888074",
+            "jbsName": "Pad Scouring Nylon 6x9in",
+            "name": "Green Scrubbies",
+            "brand": "Essentials",
+            "caseSize": "case(20 count)",
+            "weekdayPar": "1 case",
+            "weekendPar": "1 case"
+      },
+      {
+            "category": "Supplies",
+            "itemNo": "148661",
+            "jbsName": "Sanitizer Hand Mystic Nexa",
+            "name": "Hand Sanitizer",
+            "brand": "Ssdc",
+            "caseSize": "case(4 count)",
+            "weekdayPar": "1 tub",
+            "weekendPar": "1 tub"
+      },
+      {
+            "category": "Supplies",
+            "itemNo": "148664",
+            "jbsName": "Handsoap Mystic Nexa",
+            "name": "Handsoap",
+            "brand": "Ssdc",
+            "caseSize": "case(4 count)",
+            "weekdayPar": "1 tub",
+            "weekendPar": "1 tub"
+      },
+      {
+            "category": "Supplies",
+            "itemNo": "885911",
+            "jbsName": "Sanitizer Sani-quad Sinkrite",
+            "name": "Sani-Quad",
+            "brand": "Ssdc",
+            "caseSize": "case(2 tubs, 1 gal / tub)",
+            "weekdayPar": "1 tub",
+            "weekendPar": "1 tub"
+      },
+      {
+            "category": "Supplies",
+            "itemNo": "888077",
+            "jbsName": "Scrubber Stainless Steel Lg",
+            "name": "Metal Scrubbies",
+            "brand": "Essentials",
+            "caseSize": "case(12 count)",
+            "weekdayPar": "1 case",
+            "weekendPar": "1 case"
+      },
+      {
+            "category": "Supplies",
+            "itemNo": "890936",
+            "jbsName": "Tape Register Roll Thermal",
+            "name": "Register Rolls",
+            "brand": "Maxwell Paper Products",
+            "caseSize": "case(50 count)",
+            "weekdayPar": "10 rolls",
+            "weekendPar": "10 rolls"
+      },
+      {
+            "category": "N/A Bev",
+            "itemNo": "630852",
+            "jbsName": "Soda Coke Mexican",
+            "name": "Mexican Coke",
+            "brand": "Coca Cola",
+            "caseSize": "case(24 ct / 12 oz)",
+            "weekdayPar": "3 cases",
+            "weekendPar": "4 cases"
+      },
+      {
+            "category": "N/A Bev",
+            "itemNo": "630310",
+            "jbsName": "Soda Sprite Mexican",
+            "name": "Mexican Sprite",
+            "brand": "Sprite",
+            "caseSize": "case(24 ct / 12 oz)",
+            "weekdayPar": "2 cases",
+            "weekendPar": "2 cases"
+      },
+      {
+            "category": "N/A Bev",
+            "itemNo": "131498",
+            "jbsName": "Water Drinking Purified",
+            "name": "Water",
+            "brand": "Niagra",
+            "caseSize": "case(24 ct / .5 ltr)",
+            "weekdayPar": "6 cases",
+            "weekendPar": "8 cases"
+      },
+      {
+            "category": "N/A Bev",
+            "itemNo": "173807",
+            "jbsName": "Water Mineral Topo",
+            "name": "Topo Chico",
+            "brand": "Topo Chico",
+            "caseSize": "case(24 ct / 12 oz)",
+            "weekdayPar": "2 cases",
+            "weekendPar": "3 cases"
+      }
+];
+
+
+
+
+    var currentMode = "weekend";
+    var activeLocation = null;
+    var orderState = ITEMS.map(function() { return { weekday: 0, weekend: 0 }; });
+
+    function escapeHtml(value) {
+      var s = value == null ? "" : String(value);
+      return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    }
+
+    function formatNumber(n) {
+      n = Number(n || 0);
+      if (!isFinite(n)) return "";
+      if (Math.abs(n - Math.round(n)) < 0.00001) return String(Math.round(n));
+      return String(Math.round(n * 100) / 100);
+    }
+
+    function prettyItemName(name) {
+      return String(name || "").replace(/\s*\([^)]*\)/g, "");
+    }
+
+    function applyIncrement(value, increment) {
+      var v = Number(value || 0);
+      var inc = Number(increment || 0);
+      if (!isFinite(v) || v <= 0) return 0;
+      if (!isFinite(inc) || inc <= 0) return v;
+      return Math.ceil(v / inc) * inc;
+    }
+
+    function stepForItem(item) {
+      var inc = Number(item && item.increment);
+      return (isFinite(inc) && inc > 0) ? inc : 1;
+    }
+
+    function sortedItemIndexes(location) {
+      var indexes = ITEMS.map(function(item, index) { return index; });
+      indexes.sort(function(ai, bi) {
+        var a = ITEMS[ai], b = ITEMS[bi];
+        var la = a.location || "Other";
+        var lb = b.location || "Other";
+        var pa = LOCATION_ORDER.indexOf(la);
+        var pb = LOCATION_ORDER.indexOf(lb);
+        if (pa === -1) pa = LOCATION_ORDER.length;
+        if (pb === -1) pb = LOCATION_ORDER.length;
+        if (pa !== pb) return pa - pb;
+
+        var nameA = String(a.item || "").toLowerCase();
+        var nameB = String(b.item || "").toLowerCase();
+
+        if (la === "Walk-In") {
+          function cheeseRank(name) {
+            if (name.indexOf("american cheese") !== -1) return 0;
+            if (name.indexOf("pepperjack") !== -1) return 1;
+            return 2;
+          }
+          var ca = cheeseRank(nameA), cb = cheeseRank(nameB);
+          if (ca !== cb) return ca - cb;
+        }
+
+        if (la === "Shed") {
+          function gloveRank(name) {
+            if (name.indexOf("x-large gloves") !== -1) return 0;
+            if (name.indexOf("large gloves") !== -1) return 1;
+            if (name.indexOf("medium gloves") !== -1) return 2;
+            return 3;
+          }
+          var ga = gloveRank(nameA), gb = gloveRank(nameB);
+          if (ga !== gb) return ga - gb;
+        }
+
+        return String(a.item || "").localeCompare(String(b.item || ""));
+      });
+
+      if (location) {
+        indexes = indexes.filter(function(index) {
+          return (ITEMS[index].location || "Other") === location;
+        });
+      }
+      return indexes;
+    }
+
+    function getQty(index, mode) {
+      return Number(orderState[index] && orderState[index][mode] || 0);
+    }
+
+    function setQty(index, mode, value) {
+      value = Number(value || 0);
+      if (!isFinite(value) || value < 0) value = 0;
+      orderState[index][mode] = value;
+    }
+
+    function getPrepQty(index) {
+      var valueEl = document.getElementById("prepQtyValue" + index);
+      var qty = valueEl ? Number(valueEl.getAttribute("data-value") || "0") : 0;
+      return isFinite(qty) && qty > 0 ? qty : 0;
+    }
+
+    function setPrepQty(index, qty) {
+      var task = PREP_TASKS[index] || {};
+      qty = Number(qty || 0);
+      if (!isFinite(qty) || qty < 0) qty = 0;
+      if (task.responseType === "yesno") qty = qty > 0 ? 1 : 0;
+
+      var valueEl = document.getElementById("prepQtyValue" + index);
+      var rowEl = document.getElementById("prepRow" + index);
+      var yesEl = document.getElementById("prepYes" + index);
+      var noEl = document.getElementById("prepNo" + index);
+
+      if (valueEl) {
+        valueEl.setAttribute("data-value", String(qty));
+        if ("value" in valueEl) valueEl.value = String(qty);
+        if (valueEl.tagName !== "INPUT") valueEl.textContent = formatNumber(qty) || "0";
+      }
+      if (yesEl) yesEl.classList.toggle("active-yes", qty > 0);
+      if (noEl) noEl.classList.toggle("active-no", qty <= 0);
+      if (rowEl) {
+        rowEl.classList.toggle("prep-has-qty", qty > 0);
+      }
+    }
+
+    function getPrepState() {
+      return PREP_TASKS.map(function(task, index) {
+        var doneEl = document.getElementById("prepDone" + index);
+        return {
+          task: task.task,
+          done: !!(doneEl && doneEl.checked),
+          qty: getPrepQty(index),
+          gray: task.gray,
+          responseType: task.responseType || "number"
+        };
+      });
+    }
+
+    function setPrepState(prep) {
+      prep = prep || [];
+      PREP_TASKS.forEach(function(task, index) {
+        var saved = prep.find(function(row) { return row.task === task.task; }) || {};
+        var doneEl = document.getElementById("prepDone" + index);
+        if (doneEl) doneEl.checked = !!saved.done;
+        setPrepQty(index, Number(saved.qty || 0));
+      });
+    }
+
+    function commissaryPrefixForField(field) {
+      if (field === "trailer") return "commissaryTrailer";
+      return "commissaryBurgers";
+    }
+
+    function getCommissaryQty(index, field) {
+      var prefix = commissaryPrefixForField(field);
+      var input = document.getElementById(prefix + index);
+      var qty = input ? Number(input.value || "0") : 0;
+      return isFinite(qty) && qty > 0 ? qty : 0;
+    }
+
+    function setCommissaryQty(index, field, qty) {
+      qty = Number(qty || 0);
+      if (!isFinite(qty) || qty < 0) qty = 0;
+
+      var prefix = commissaryPrefixForField(field);
+      var input = document.getElementById(prefix + index);
+      var display = document.getElementById(prefix + "Value" + index);
+      var card = document.querySelector('.commissary-card[data-comm-index="' + index + '"][data-comm-field="' + field + '"]');
+      var formatted = qty > 0 ? formatNumber(qty) : "";
+
+      if (input) input.value = formatted;
+      if (display) {
+        display.setAttribute("data-value", String(qty));
+        display.textContent = qty > 0 ? formatted : "0";
+      }
+      if (card) card.classList.toggle("has-value", qty > 0);
+    }
+
+    function setCommissaryView(view) {
+      if (view !== "trailer") view = "burgers";
+
+      var buttons = document.querySelectorAll(".commissary-view-btn");
+      Array.prototype.forEach.call(buttons, function(btn) {
+        btn.classList.toggle("active", btn.getAttribute("data-comm-view") === view);
+      });
+
+      var panels = document.querySelectorAll(".commissary-view-panel");
+      Array.prototype.forEach.call(panels, function(panel) {
+        panel.classList.toggle("active", panel.getAttribute("data-comm-panel") === view);
+      });
+
+      var search = document.getElementById("commissarySearch");
+      var banner = document.getElementById("commissaryActiveBanner");
+      if (search) {
+        var label = view === "trailer" ? "Trailer on-hand list" : "Burgers on-hand list";
+        search.placeholder = "Search " + label + "...";
+        search.value = "";
+      }
+      if (banner) {
+        banner.textContent = "CURRENT SHEET: " + (view === "trailer" ? "TRAILER ON HAND" : "BURGERS ON HAND");
+      }
+
+      filterCommissaryCards();
+    }
+
+    function filterCommissaryCards() {
+      var search = document.getElementById("commissarySearch");
+      var query = search ? search.value.trim().toLowerCase() : "";
+      var activePanel = document.querySelector(".commissary-view-panel.active");
+      if (!activePanel) return;
+
+      var cards = activePanel.querySelectorAll(".commissary-card");
+      Array.prototype.forEach.call(cards, function(card) {
+        var haystack = card.getAttribute("data-search") || card.textContent.toLowerCase();
+        card.style.display = (!query || haystack.indexOf(query) !== -1) ? "" : "none";
+      });
+    }
+
+    function getCommissaryState() {
+      return {
+        dateOrdered: (document.getElementById("commissaryDateOrdered") || {}).value || "",
+        modSignature: (document.getElementById("commissaryModSignature") || {}).value || "",
+        rows: COMMISSARY_ITEMS.map(function(row, index) {
+          return {
+            item: row.item,
+            batchSize: row.batchSize,
+            onHandBurgers: (document.getElementById("commissaryBurgers" + index) || {}).value || "",
+            onHandTrailer: (document.getElementById("commissaryTrailer" + index) || {}).value || "",
+            weekdayPar: row.weekdayPar,
+            weekendPar: row.weekendPar
+          };
+        })
+      };
+    }
+
+    function getBekQty(index) {
+      var valueEl = document.getElementById("bekQtyValue" + index);
+      var qty = valueEl ? Number(valueEl.getAttribute("data-value") || "0") : 0;
+      return isFinite(qty) && qty > 0 ? qty : 0;
+    }
+
+    function setBekQty(index, qty) {
+      qty = Number(qty || 0);
+      if (!isFinite(qty) || qty < 0) qty = 0;
+
+      var valueEl = document.getElementById("bekQtyValue" + index);
+      var inputEl = document.getElementById("bekOrder" + index);
+      var card = document.querySelector('.bek-card[data-bek-index="' + index + '"]');
+      var formatted = qty > 0 ? formatNumber(qty) : "";
+
+      if (valueEl) {
+        valueEl.setAttribute("data-value", String(qty));
+        valueEl.textContent = qty > 0 ? formatted : "0";
+      }
+      if (inputEl) inputEl.value = formatted;
+      if (card) card.classList.toggle("has-value", qty > 0);
+    }
+
+    function getBekOrderState() {
+      return BEK_ITEMS.map(function(row, index) {
+        return {
+          category: row.category,
+          itemNo: row.itemNo,
+          jbsName: row.jbsName,
+          name: row.name,
+          brand: row.brand,
+          caseSize: row.caseSize,
+          weekdayPar: row.weekdayPar,
+          weekendPar: row.weekendPar,
+          onHand: (document.getElementById("bekOnHand" + index) || {}).value || "",
+          order: (document.getElementById("bekOrder" + index) || {}).value || ""
+        };
+      });
+    }
+
+    function filterBekCards() {
+      var search = document.getElementById("bekSearch");
+      var query = search ? search.value.trim().toLowerCase() : "";
+      var currentCategory = null;
+      var categoryHasVisible = false;
+
+      var nodes = document.querySelectorAll(".bek-category, .bek-card");
+      Array.prototype.forEach.call(nodes, function(node) {
+        if (node.classList.contains("bek-category")) {
+          if (currentCategory) currentCategory.style.display = categoryHasVisible ? "" : "none";
+          currentCategory = node;
+          categoryHasVisible = false;
+          node.style.display = "";
+          return;
+        }
+
+        var haystack = node.getAttribute("data-search") || node.textContent.toLowerCase();
+        var visible = !query || haystack.indexOf(query) !== -1;
+        node.style.display = visible ? "" : "none";
+        if (visible) categoryHasVisible = true;
+      });
+
+      if (currentCategory) currentCategory.style.display = categoryHasVisible ? "" : "none";
+    }
+
+    function updateBekModePill() {
+      var el = document.getElementById("bekModePill");
+      if (el) el.textContent = currentMode === "weekend" ? "Weekend" : "Weekday";
+    }
+
+    function buildBekList() {
+      var list = document.getElementById("bekList");
+      if (!list) return;
+      list.innerHTML = "";
+
+      var lastCategory = "";
+      BEK_ITEMS.forEach(function(row, index) {
+        if (row.category !== lastCategory) {
+          var category = document.createElement("div");
+          category.className = "bek-category";
+          category.textContent = row.category || "Items";
+          list.appendChild(category);
+          lastCategory = row.category;
+        }
+
+        var initials = String(row.name || "BK").split(/\s+/).slice(0, 2).map(function(part) {
+          return part.charAt(0);
+        }).join("").toUpperCase() || "BK";
+
+        var search = [row.category, row.itemNo, row.jbsName, row.name, row.brand, row.caseSize, row.weekdayPar, row.weekendPar].join(" ").toLowerCase();
+        var card = document.createElement("article");
+        card.className = "bek-card";
+        card.setAttribute("data-bek-index", String(index));
+        card.setAttribute("data-search", search);
+
+        card.innerHTML =
+          '<div class="bek-thumb">' + escapeHtml(initials) + '</div>' +
+          '<div class="bek-info">' +
+            '<div class="bek-name">' + escapeHtml(row.name || "") + '</div>' +
+            '<div class="bek-meta">#' + escapeHtml(row.itemNo || "") + ' · ' + escapeHtml(row.brand || "") + '</div>' +
+            '<div class="bek-case">' + escapeHtml(row.caseSize || "") + '</div>' +
+            '<div class="bek-par"><span>Weekday: <strong>' + escapeHtml(row.weekdayPar || "") + '</strong></span><span>Weekend: <strong>' + escapeHtml(row.weekendPar || "") + '</strong></span></div>' +
+            '<label class="bek-onhand-label">On hand<input class="bek-onhand-input" id="bekOnHand' + index + '" type="text" inputmode="decimal" placeholder="optional" /></label>' +
+          '</div>' +
+          '<div class="bek-order">' +
+            '<span class="bek-order-label">Order</span>' +
+            '<div class="bek-stepper" data-index="' + index + '">' +
+              '<button type="button" class="bek-step-btn" data-action="minus" aria-label="Decrease order quantity">−</button>' +
+              '<span class="bek-qty-value" id="bekQtyValue' + index + '" data-value="0">0</span>' +
+              '<button type="button" class="bek-step-btn" data-action="plus" aria-label="Increase order quantity">+</button>' +
+              '<input type="hidden" id="bekOrder' + index + '" value="" />' +
+            '</div>' +
+          '</div>';
+        list.appendChild(card);
+      });
+    }
+
+    function todayString() {
+      var now = new Date();
+      var y = now.getFullYear();
+      var m = String(now.getMonth() + 1).padStart(2, "0");
+      var d = String(now.getDate()).padStart(2, "0");
+      return y + "-" + m + "-" + d;
+    }
+
+    function updatePrepDateLine() {
+      var el = document.getElementById("prepDateLine");
+      if (el) el.textContent = todayString();
+    }
+
+    function dayNameForDate(date) {
+      return ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][date.getDay()];
+    }
+
+    function businessDateForOrders() {
+      // Restaurant business day ends at 4:00 AM.
+      // Example: Monday 2:30 AM should still show Sunday required orders.
+      var now = new Date();
+      return new Date(now.getTime() - (4 * 60 * 60 * 1000));
+    }
+
+    function businessTodayString() {
+      var businessDate = businessDateForOrders();
+      var y = businessDate.getFullYear();
+      var m = String(businessDate.getMonth() + 1).padStart(2, "0");
+      var d = String(businessDate.getDate()).padStart(2, "0");
+      return y + "-" + m + "-" + d;
+    }
+
+    function businessDayName() {
+      return dayNameForDate(businessDateForOrders());
+    }
+
+    function todayDayName() {
+      return businessDayName();
+    }
+
+    function getTodayTaskIds() {
+      return WEEKLY_ORDER_SCHEDULE[businessDayName()] || [];
+    }
+
+    function getDailyStatusStore() {
+      try {
+        var raw = localStorage.getItem(DAILY_STATUS_STORAGE_KEY);
+        var parsed = raw ? JSON.parse(raw) : {};
+        return parsed && typeof parsed === "object" ? parsed : {};
+      } catch (err) {
+        return {};
+      }
+    }
+
+    function saveDailyStatusStore(store) {
+      localStorage.setItem(DAILY_STATUS_STORAGE_KEY, JSON.stringify(store || {}));
+    }
+
+    function getTodayStatuses() {
+      var store = getDailyStatusStore();
+      var key = businessTodayString();
+      if (!store[key]) store[key] = {};
+      return store[key];
+    }
+
+    function setTaskDone(taskId, done, source) {
+      var store = getDailyStatusStore();
+      var key = businessTodayString();
+      if (!store[key]) store[key] = {};
+      if (done) {
+        store[key][taskId] = {
+          done: true,
+          source: source || "manual",
+          updatedAt: new Date().toISOString(),
+          businessDate: key
+        };
+      } else {
+        delete store[key][taskId];
+      }
+      saveDailyStatusStore(store);
+      renderTodayChecklist();
+    }
+
+    function isTaskDone(taskId) {
+      var statuses = getTodayStatuses();
+      return !!(statuses[taskId] && statuses[taskId].done);
+    }
+
+    function hasDailyOrderWork() {
+      return orderState.some(function(row) {
+        return Number(row.weekday || 0) > 0 || Number(row.weekend || 0) > 0;
+      });
+    }
+
+    function hasPrepWork() {
+      return getPrepState().some(function(row) {
+        return Number(row.qty || 0) > 0 || row.done;
+      });
+    }
+
+    function hasCommissaryWork() {
+      var state = getCommissaryState();
+      return (state.rows || []).some(function(row) {
+        return Number(row.onHandBurgers || 0) > 0 || Number(row.onHandTrailer || 0) > 0;
+      });
+    }
+
+    function hasBekWork() {
+      return getBekOrderState().some(function(row) {
+        return Number(row.order || 0) > 0 || String(row.onHand || "").trim() !== "";
+      });
+    }
+
+    function isTaskStarted(taskId) {
+      if (isTaskDone(taskId)) return false;
+      if (taskId === "daily") return hasDailyOrderWork();
+      if (taskId === "prep") return hasPrepWork();
+      if (taskId === "commissary") return hasCommissaryWork();
+      return false;
+    }
+
+    function statusForTask(taskId) {
+      if (isTaskDone(taskId)) return { key: "done", label: "Done" };
+      if (isTaskStarted(taskId)) return { key: "started", label: "Started" };
+      return { key: "missing", label: "Not Started" };
+    }
+
+    function markDueAppSectionsDoneOnSave() {
+      getTodayTaskIds().forEach(function(taskId) {
+        if (taskId === "daily" || taskId === "prep" || taskId === "commissary") {
+          setTaskDone(taskId, true, "save");
+        }
+      });
+    }
+
+    function getMissingRequiredTasks() {
+      return getTodayTaskIds().filter(function(taskId) {
+        return !isTaskDone(taskId);
+      });
+    }
+
+    function updateTodayHeader() {
+      var businessDate = businessDateForOrders();
+      var actualNow = new Date();
+      var dayEl = document.getElementById("todayDayLabel");
+      var dateEl = document.getElementById("todayDateLabel");
+      if (dayEl) dayEl.textContent = "Business day: " + businessDayName();
+      if (dateEl) {
+        var businessDateText = businessDate.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
+        var actualDateText = actualNow.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+        dateEl.textContent = businessDateText + " · Orders roll over at 4:00 AM";
+        if (businessTodayString() !== todayString()) {
+          dateEl.textContent += " · Phone date: " + actualDateText;
+        }
+      }
+    }
+
+    function getFirstIncompleteTaskIndex() {
+      var taskIds = getTodayTaskIds();
+      for (var i = 0; i < taskIds.length; i++) {
+        if (!isTaskDone(taskIds[i])) return i;
+      }
+      return taskIds.length ? taskIds.length - 1 : 0;
+    }
+
+    function hideAllWorkflowSections() {
+      document.querySelectorAll(".collapsible-section").forEach(function(section) {
+        section.classList.add("guided-hidden");
+        section.classList.remove("guided-active-section");
+      });
+      var savedInfo = document.getElementById("savedInfo");
+      if (savedInfo) savedInfo.classList.add("guided-hidden");
+    }
+
+    function revealWorkflowSection(sectionName) {
+      hideAllWorkflowSections();
+      var section = document.querySelector('.collapsible-section[data-section="' + sectionName + '"]');
+      if (!section) return;
+      section.classList.remove("guided-hidden");
+      section.classList.add("guided-active-section");
+      setSectionCollapsed(section, false);
+      localStorage.setItem("jbs_section_open_" + sectionName, "open");
+      setTimeout(function() {
+        section.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }, 50);
+    }
+
+    function setGuidedScreen(screenName) {
+      ["guidedLanding", "guidedStepScreen", "guidedCompleteScreen"].forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el) el.classList.toggle("active", id === screenName);
+      });
+
+      if (screenName === "guidedLanding" || screenName === "guidedCompleteScreen") {
+        hideAllWorkflowSections();
+      }
+    }
+
+    function getGuidedTaskIcon(taskId) {
+      if (taskId === "daily") return "▤";
+      if (taskId === "prep") return "☰";
+      if (taskId === "commissary") return "▥";
+      if (taskId === "propane") return "▢";
+      return "✓";
+    }
+
+    function getGuidedTaskIconClass(taskId) {
+      if (taskId === "daily") return "blue";
+      if (taskId === "prep" || taskId === "commissary") return "green";
+      return "red";
+    }
+
+    function getGuidedTaskInstructions(taskId) {
+      if (taskId === "daily") return "Create today’s Daily Order List. Tap Start, enter the order, then tap Save when finished.";
+      if (taskId === "prep") return "Create today’s Prep List. Tap Start, fill out the list, then tap Save when finished.";
+      if (taskId === "commissary") return "Check the Burgers and Trailer on-hand lists for the commissary order, then tap Save when finished.";
+      return "Complete this required task, then mark it done.";
+    }
+
+    function getGuidedPrimaryLabel(taskId) {
+      return "Start " + ((DAILY_TASKS[taskId] || {}).label || "Task");
+    }
+
+    function updateGuidedLanding() {
+      var taskIds = getTodayTaskIds();
+      var missing = getMissingRequiredTasks();
+      var doneCount = taskIds.length - missing.length;
+
+      var title = document.getElementById("guidedLandingTitle");
+      var pill = document.getElementById("todayCompletionPill");
+      var note = document.getElementById("todayMissingNote");
+
+      if (title) title.textContent = taskIds.length + " thing" + (taskIds.length === 1 ? "" : "s") + " need to be completed today";
+      if (pill) {
+        pill.textContent = doneCount + " of " + taskIds.length + " complete";
+        pill.classList.toggle("complete", missing.length === 0);
+      }
+      if (note) {
+        if (missing.length) {
+          note.classList.remove("complete");
+          note.textContent = "Next: " + ((DAILY_TASKS[missing[0]] || {}).label || "Required task");
+        } else {
+          note.classList.add("complete");
+          note.textContent = "All required orders are complete.";
+        }
+      }
+    }
+
+    function updateGuidedArrowStatus(taskIds) {
+      var status = document.getElementById("guidedArrowStatus");
+      if (!status) return;
+      var taskId = taskIds[guidedCurrentIndex];
+      var task = DAILY_TASKS[taskId] || {};
+      var doneLabel = isTaskDone(taskId) ? " · Done" : "";
+      status.textContent = "Step " + (guidedCurrentIndex + 1) + " of " + taskIds.length + doneLabel;
+    }
+
+    function renderGuidedStep(preserveActiveSection) {
+      if (!preserveActiveSection) hideAllWorkflowSections();
+      var taskIds = getTodayTaskIds();
+      if (!taskIds.length) {
+        setGuidedScreen("guidedLanding");
+        return;
+      }
+      if (guidedCurrentIndex < 0) guidedCurrentIndex = 0;
+      if (guidedCurrentIndex >= taskIds.length) guidedCurrentIndex = taskIds.length - 1;
+
+      var taskId = taskIds[guidedCurrentIndex];
+      var task = DAILY_TASKS[taskId] || {};
+      var done = isTaskDone(taskId);
+
+      var count = document.getElementById("guidedStepCount");
+      var title = document.getElementById("guidedStepTitle");
+      var icon = document.getElementById("guidedTaskIcon");
+      var instructions = document.getElementById("guidedTaskInstructions");
+      var primary = document.getElementById("guidedPrimaryAction");
+      var mark = document.getElementById("guidedMarkDoneBtn");
+
+      if (count) count.textContent = "Step " + (guidedCurrentIndex + 1) + " of " + taskIds.length;
+      if (title) title.textContent = task.label || "Required task";
+      if (icon) {
+        icon.textContent = getGuidedTaskIcon(taskId);
+        icon.className = "guided-task-icon " + getGuidedTaskIconClass(taskId);
+      }
+      if (instructions) instructions.textContent = getGuidedTaskInstructions(taskId);
+      if (primary) {
+        primary.textContent = done ? "Already Done — Next Step" : getGuidedPrimaryLabel(taskId);
+        primary.classList.toggle("gold", taskId === "propane" || taskId === "tortilla");
+      }
+      if (mark) mark.textContent = done ? "Undo Done" : "Mark as Done";
+
+      updateGuidedArrowStatus(taskIds);
+      setGuidedScreen("guidedStepScreen");
+    }
+
+    function renderDashboardCalendar() {
+      var grid = document.getElementById("dashboardCalendarGrid");
+      var monthLabel = document.getElementById("calendarMonthLabel");
+      var weekLabel = document.getElementById("calendarWeekLabel");
+      if (!grid) return;
+
+      var businessDate = businessDateForOrders();
+      var monthStart = new Date(businessDate.getFullYear(), businessDate.getMonth(), 1);
+      var calendarStart = new Date(monthStart);
+      var startOffset = (monthStart.getDay() + 6) % 7; // Monday-first calendar
+      calendarStart.setDate(monthStart.getDate() - startOffset);
+
+      var weekStart = new Date(businessDate);
+      var businessDay = weekStart.getDay();
+      var mondayOffset = (businessDay + 6) % 7;
+      weekStart.setDate(weekStart.getDate() - mondayOffset);
+      weekStart.setHours(0, 0, 0, 0);
+
+      var weekEnd = new Date(weekStart);
+      weekEnd.setDate(weekStart.getDate() + 6);
+      weekEnd.setHours(23, 59, 59, 999);
+
+      if (monthLabel) {
+        monthLabel.textContent = businessDate.toLocaleDateString(undefined, { month: "long", year: "numeric" });
+      }
+      if (weekLabel) {
+        weekLabel.textContent = "Yellow = current working week";
+      }
+
+      grid.innerHTML = "";
+      var names = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+      names.forEach(function(name) {
+        var header = document.createElement("div");
+        header.className = "calendar-header-cell";
+        header.textContent = name;
+        grid.appendChild(header);
+      });
+
+      for (var i = 0; i < 42; i++) {
+        var d = new Date(calendarStart);
+        d.setDate(calendarStart.getDate() + i);
+        d.setHours(12, 0, 0, 0);
+
+        var cell = document.createElement("div");
+        cell.className = "calendar-cell";
+        if (d.getMonth() !== businessDate.getMonth()) cell.classList.add("outside-month");
+        if (d >= weekStart && d <= weekEnd) cell.classList.add("current-week");
+        if (d.toDateString() === businessDate.toDateString()) {
+          cell.classList.add("current-day");
+          cell.classList.add("today-marker");
+        }
+
+        cell.innerHTML =
+          '<div class="calendar-day-num">' + d.getDate() + '</div>';
+        grid.appendChild(cell);
+      }
+    }
+
+    function renderDashboardNotifications() {
+      var dayEl = document.getElementById("dashboardBusinessDay");
+      var list = document.getElementById("dashboardNoticeList");
+      if (dayEl) dayEl.textContent = "Business day: " + businessDayName();
+      if (!list) return;
+
+      var taskIds = getTodayTaskIds();
+      list.innerHTML = "";
+      if (!taskIds.length) {
+        list.innerHTML = '<div class="dashboard-notice done"><span class="dashboard-notice-dot"></span><span>No required tasks today</span></div>';
+        return;
+      }
+
+      taskIds.forEach(function(taskId) {
+        var task = DAILY_TASKS[taskId];
+        if (!task) return;
+        var status = statusForTask(taskId);
+        var item = document.createElement("div");
+        item.className = "dashboard-notice " + (status.key === "done" ? "done" : status.key === "started" ? "started" : "");
+        item.innerHTML = '<span class="dashboard-notice-dot"></span><span>' + escapeHtml(task.label) + '<br><small>' + escapeHtml(status.label) + '</small></span>';
+        list.appendChild(item);
+      });
+    }
+
+    function renderTodayChecklist() {
+      updateTodayHeader();
+      renderDashboardCalendar();
+      renderDashboardNotifications();
+      updateGuidedLanding();
+
+      var missing = getMissingRequiredTasks();
+      if (!missing.length && document.getElementById("guidedCompleteScreen") && document.getElementById("guidedCompleteScreen").classList.contains("active")) {
+        var doneText = document.getElementById("guidedCompleteText");
+        if (doneText) doneText.textContent = "You have completed all required orders for " + businessDayName() + ".";
+      }
+
+      var stepScreen = document.getElementById("guidedStepScreen");
+      if (stepScreen && stepScreen.classList.contains("active")) renderGuidedStep(true);
+    }
+
+    function openHomeSection(sectionName) {
+      revealWorkflowSection(sectionName);
+    }
+
+    function startGuidedOrders() {
+      guidedCurrentIndex = getFirstIncompleteTaskIndex();
+      hideAllWorkflowSections();
+      renderGuidedStep();
+    }
+
+    function goToNextGuidedStep() {
+      var taskIds = getTodayTaskIds();
+      var missing = getMissingRequiredTasks();
+      if (!missing.length) {
+        var doneText = document.getElementById("guidedCompleteText");
+        if (doneText) doneText.textContent = "You have completed all required orders for " + businessDayName() + ".";
+        setGuidedScreen("guidedCompleteScreen");
+        renderTodayChecklist();
+        return;
+      }
+
+      for (var i = guidedCurrentIndex + 1; i < taskIds.length; i++) {
+        if (!isTaskDone(taskIds[i])) {
+          guidedCurrentIndex = i;
+          renderGuidedStep();
+          return;
+        }
+      }
+      guidedCurrentIndex = getFirstIncompleteTaskIndex();
+      renderGuidedStep();
+    }
+
+    function startDailyTask(taskId) {
+      var task = DAILY_TASKS[taskId];
+      if (!task) return;
+
+      if (task.type === "section") {
+        openHomeSection(task.section);
+        return;
+      }
+
+      if (task.type === "entree") {
+        openHomeSection(task.section);
+        recordEntreeOpened();
+        window.open("https://www.bekentree.com/", "_blank", "noopener,noreferrer");
+        goToNextGuidedStep();
+        return;
+      }
+
+      setTaskDone(taskId, true, "manual");
+      goToNextGuidedStep();
+    }
+
+    function confirmMissingBeforeExport() {
+      var missing = getMissingRequiredTasks();
+      if (!missing.length) return true;
+
+      var message = "The following required orders are not marked done today:\n\n" +
+        missing.map(function(taskId) { return "• " + DAILY_TASKS[taskId].label; }).join("\n") +
+        "\n\nExport anyway?";
+      return confirm(message);
+    }
+
+    function buildPrepList() {
+      var tbody = document.getElementById("prepListBody");
+      tbody.innerHTML = "";
+      PREP_TASKS.forEach(function(row, index) {
+        var tr = document.createElement("tr");
+        tr.id = "prepRow" + index;
+        if (row.gray) tr.className = "gray-row";
+
+        var responseHtml = "";
+        if (row.responseType === "number") {
+          responseHtml =
+            '<div class="prep-stepper" data-index="' + index + '">' +
+              '<button type="button" class="prep-step-btn" data-action="minus" aria-label="Decrease prep quantity">−</button>' +
+              '<span class="prep-qty-value" id="prepQtyValue' + index + '" data-value="0">0</span>' +
+              '<button type="button" class="prep-step-btn" data-action="plus" aria-label="Increase prep quantity">+</button>' +
+            '</div>';
+        } else {
+          responseHtml =
+            '<div class="prep-yesno" data-index="' + index + '">' +
+              '<button type="button" class="prep-choice-btn active-no" id="prepNo' + index + '" data-value="0" aria-label="Mark prep item no">No</button>' +
+              '<button type="button" class="prep-choice-btn" id="prepYes' + index + '" data-value="1" aria-label="Mark prep item yes">Yes</button>' +
+              '<input type="hidden" id="prepQtyValue' + index + '" value="0" data-value="0" />' +
+            '</div>';
+        }
+
+        tr.innerHTML =
+          '<td>' + escapeHtml(row.task) + '</td>' +
+          '<td class="done-cell"><input type="checkbox" id="prepDone' + index + '" /></td>' +
+          '<td class="prep-qty-cell">' + responseHtml + '</td>';
+        tbody.appendChild(tr);
+      });
+    }
+
+    function buildLocations() {
+      var grid = document.getElementById("locationGrid");
+      grid.innerHTML = "";
+      VISIBLE_LOCATIONS.forEach(function(location) {
+        var count = ITEMS.filter(function(item) { return item.location === location; }).length;
+        var active = sortedItemIndexes(location).filter(function(index) { return getQty(index, currentMode) > 0; }).length;
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "location-card" + (active > 0 ? " has-active" : "");
+        btn.setAttribute("data-location", location);
+        btn.innerHTML =
+          '<span class="location-icon">' + (LOCATION_ICONS[location] || "▣") + '</span>' +
+          '<span class="location-title">' + escapeHtml(location) + '</span>' +
+          '<span class="location-count">' + count + ' items</span>' +
+          (active > 0 ? '<span class="location-active-count">' + active + ' selected</span>' : "");
+        btn.addEventListener("click", function() { openSection(location); });
+        grid.appendChild(btn);
+      });
+    }
+
+    function renderItemList() {
+      var list = document.getElementById("itemList");
+      var search = document.getElementById("sectionSearch");
+      var query = search ? search.value.trim().toLowerCase() : "";
+      list.innerHTML = "";
+
+      if (!activeLocation) return;
+
+      var indexes = sortedItemIndexes(activeLocation).filter(function(index) {
+        var item = ITEMS[index];
+        return !query || String(item.item || "").toLowerCase().indexOf(query) !== -1;
+      });
+
+      if (!indexes.length) {
+        list.innerHTML = '<div class="empty-list">No items found in this section.</div>';
+        return;
+      }
+
+      indexes.forEach(function(index) {
+        var item = ITEMS[index];
+        var qty = getQty(index, currentMode);
+        var par = item.weekendPar;
+        var img = productImageForItem(item.item);
+        var card = document.createElement("article");
+        card.className = "item-card" + (qty > 0 ? " has-value" : "");
+        card.setAttribute("data-index", index);
+
+        var imgHtml = img
+          ? '<img class="product-thumb" src="' + escapeHtml(img) + '" alt="" onerror="this.style.display=\'none\'; this.nextElementSibling.style.display=\'flex\';" /><div class="product-fallback" style="display:none;">' + escapeHtml(prettyItemName(item.item).slice(0, 2).toUpperCase()) + '</div>'
+          : '<div class="product-fallback">' + escapeHtml(prettyItemName(item.item).slice(0, 2).toUpperCase()) + '</div>';
+
+        card.innerHTML =
+          imgHtml +
+          '<div class="item-info">' +
+            '<div class="item-name">' + escapeHtml(prettyItemName(item.item)) + (qty > 0 ? '<span class="needs-dot"></span>' : '') + '</div>' +
+            '<div class="item-meta">Weekend Par: ' + escapeHtml(formatNumber(par)) + ' · Unit: ' + escapeHtml(item.unit || "") + '</div>' +
+          '</div>' +
+          '<div class="qty-stepper">' +
+            '<button type="button" class="qty-btn" data-action="minus" aria-label="Decrease">−</button>' +
+            '<span class="qty-value">' + escapeHtml(formatNumber(qty) || "0") + '</span>' +
+            '<button type="button" class="qty-btn" data-action="plus" aria-label="Increase">+</button>' +
+          '</div>';
+
+        list.appendChild(card);
+      });
+    }
+
+    function setMode(mode) {
+      currentMode = "weekend";
+      buildLocations();
+      renderItemList();
+    }
+
+    function openSection(location) {
+      activeLocation = location;
+      var modal = document.getElementById("sectionModal");
+      var title = document.getElementById("sectionTitle");
+      var search = document.getElementById("sectionSearch");
+      if (title) title.textContent = location;
+      if (search) search.value = "";
+      modal.classList.add("open");
+      modal.setAttribute("aria-hidden", "false");
+      renderItemList();
+    }
+
+    function closeSection() {
+      activeLocation = null;
+      var modal = document.getElementById("sectionModal");
+      modal.classList.remove("open");
+      modal.setAttribute("aria-hidden", "true");
+    }
+
+    function buildEntries() {
+      return ITEMS.map(function(item, index) {
+        return {
+          item: item.item,
+          unit: item.unit || "",
+          location: item.location || "Other",
+          weekdayPar: Number(item.weekdayPar || 0),
+          weekendPar: Number(item.weekendPar || 0),
+          weekdayOrder: Number(orderState[index].weekday || 0),
+          weekendOrder: Number(orderState[index].weekend || 0)
+        };
+      });
+    }
+
+    function getCurrentSheetObject() {
+      var noteEl = document.getElementById("shiftNote");
+      return {
+        timestamp: new Date().toISOString(),
+        viewMode: "weekend",
+        note: noteEl ? noteEl.value : "",
+        prepList: getPrepState(),
+        commissaryOrder: getCommissaryState(),
+        bekOrder: getBekOrderState(),
+        entries: buildEntries()
+      };
+    }
+
+    function loadHistory() {
+      try {
+        var raw = localStorage.getItem(STORAGE_KEY);
+        return raw ? JSON.parse(raw) : [];
+      } catch (err) {
+        return [];
+      }
+    }
+
+    function saveHistory(history) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+      updateSavedInfo();
+    }
+
+    function updateSavedInfo() {
+      var el = document.getElementById("savedInfo");
+      var count = loadHistory().length;
+      if (el) el.textContent = "Saved sheets on this device: " + count;
+    }
+
+    function setSectionCollapsed(section, shouldCollapse) {
+      section.classList.toggle("collapsed", shouldCollapse);
+      var button = section.querySelector(".collapsible-toggle");
+      if (button) {
+        button.setAttribute("aria-expanded", shouldCollapse ? "false" : "true");
+      }
+    }
+
+    function initCollapsibleSections() {
+      var sections = document.querySelectorAll(".collapsible-section");
+      Array.prototype.forEach.call(sections, function(section) {
+        var name = section.getAttribute("data-section") || "section";
+        var key = "jbs_section_open_" + name;
+        var stored = localStorage.getItem(key);
+        var defaultOpen = section.getAttribute("data-default") === "open";
+        var isOpen = stored ? stored === "open" : defaultOpen;
+        setSectionCollapsed(section, !isOpen);
+
+        var button = section.querySelector(".collapsible-toggle");
+        if (!button) return;
+
+        button.addEventListener("click", function() {
+          var willOpen = section.classList.contains("collapsed");
+          setSectionCollapsed(section, !willOpen);
+          localStorage.setItem(key, willOpen ? "open" : "closed");
+        });
+      });
+    }
+
+    function saveCurrentSheet() {
+      var history = loadHistory();
+      history.push(getCurrentSheetObject());
+      saveHistory(history);
+      markDueAppSectionsDoneOnSave();
+      renderTodayChecklist();
+      var stepScreen = document.getElementById("guidedStepScreen");
+      if (stepScreen && stepScreen.classList.contains("active")) goToNextGuidedStep();
+      showToast("Saved sheet and updated today\'s checklist");
+    }
+
+    function activeEntries(sheet) {
+      var mode = "weekend";
+      return (sheet.entries || []).filter(function(entry) {
+        return Number(mode === "weekday" ? entry.weekdayOrder : entry.weekendOrder) > 0;
+      });
+    }
+
+    function groupedActiveEntries(sheet) {
+      var groups = {};
+      activeEntries(sheet).forEach(function(entry) {
+        var loc = entry.location || "Other";
+        if (!groups[loc]) groups[loc] = [];
+        groups[loc].push(entry);
+      });
+      return groups;
+    }
+
+    function openReview() {
+      var sheet = getCurrentSheetObject();
+      var groups = groupedActiveEntries(sheet);
+      var review = document.getElementById("reviewList");
+      review.innerHTML = "";
+
+      var any = false;
+      LOCATION_ORDER.forEach(function(loc) {
+        var entries = groups[loc] || [];
+        if (!entries.length) return;
+        any = true;
+        var group = document.createElement("section");
+        group.className = "review-group";
+        group.innerHTML = '<h3>' + escapeHtml(loc) + '</h3>';
+        entries.forEach(function(entry) {
+          var qty = sheet.viewMode === "weekday" ? entry.weekdayOrder : entry.weekendOrder;
+          group.innerHTML += '<div class="review-row"><span>' + escapeHtml(prettyItemName(entry.item)) + '</span><span class="review-qty">' + escapeHtml(formatNumber(qty)) + '</span></div>';
+        });
+        review.appendChild(group);
+      });
+
+      if (!any) {
+        review.innerHTML = '<div class="empty-list">No To Bring quantities yet. Add items with the + button, then review again.</div>';
+      }
+
+      var modal = document.getElementById("reviewModal");
+      modal.classList.add("open");
+      modal.setAttribute("aria-hidden", "false");
+    }
+
+    function closeReview() {
+      var modal = document.getElementById("reviewModal");
+      modal.classList.remove("open");
+      modal.setAttribute("aria-hidden", "true");
+    }
+
+    function makeDateFilename(prefix, mode) {
+      return prefix + "_" + mode + "_" + todayString() + ".html";
+    }
+
+    function exportPrintableSheet() {
+      var sheet = getCurrentSheetObject();
+      var mode = "weekend";
+      var modeLabel = "Weekend";
+      var groups = groupedActiveEntries(sheet);
+
+      var parts = [];
+      parts.push('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>JewBoy Sliders Order Sheet</title>');
+      parts.push('<style>');
+      parts.push('body{margin:0;padding:1rem;background:#fff;color:#111827;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;}');
+      parts.push('h1{margin:0;font-size:1.4rem;} .sub{color:#6b7280;font-size:.85rem;margin:.15rem 0 .7rem;}');
+      parts.push('.brand{border-bottom:4px solid #d4a017;padding-bottom:.6rem;margin-bottom:.8rem;}');
+      parts.push('.note{border-left:4px solid #d4a017;background:#fffbeb;padding:.6rem .75rem;margin:.75rem 0 1rem;white-space:pre-wrap;}');
+      parts.push('table{border-collapse:collapse;width:100%;font-size:.82rem;margin-bottom:1.25rem;} th{background:#000;color:#fff;text-transform:uppercase;font-size:.68rem;letter-spacing:.08em;text-align:left;padding:.35rem;} td{border:1px solid #e5e7eb;padding:.35rem;} tr:nth-child(even) td{background:#f9fafb;} td.to-bring{background:#facc15!important;font-weight:800;color:#111827;} .dot{display:inline-block;width:.45rem;height:.45rem;background:#d4a017;border-radius:999px;margin-left:.35rem;}');
+      parts.push('.loc{margin-top:1rem;font-weight:900;color:#d4a017;text-transform:uppercase;border-bottom:2px solid #d4a017;padding-bottom:.2rem;}');
+      parts.push('.prep-wrap{page-break-before:always;margin-top:1.5rem;} .prep-head{text-align:center;margin:1rem 0;} .prep-logo{font-weight:900;line-height:1.05;} .runner{font-size:2rem;display:block;} .prep-title{font-family:Georgia,serif;font-size:1.7rem;color:#4b5563;margin:.8rem 0;} .prep-lines{display:grid;grid-template-columns:auto 1fr;gap:.45rem;max-width:360px;margin:0 auto;font-size:.8rem;} .prep-line{border-bottom:1px solid #111827;min-height:1.1rem;} .prep-table th{background:#9bbff3;color:#111827;} .prep-table td.gray{background:#d9d9d9;} .check{font-size:1rem;text-align:center;}');
+      parts.push('.commissary-wrap{page-break-before:always;margin-top:1.5rem;} .commissary-title-export{text-align:center;font-weight:950;font-size:1.25rem;margin:.7rem 0;} .commissary-table-export th{background:#ccffcc;color:#000;text-align:center;} .commissary-table-export td{text-align:center;color:#000;} .commissary-table-export tr:nth-child(even) td{background:#eee;} .commissary-foot td{background:#ccffcc!important;text-align:left;font-weight:900;}');
+      parts.push('</style></head><body>');
+      parts.push('<div class="brand"><h1>JewBoy Sliders – Order Sheet</h1><div class="sub">' + escapeHtml(BRANDING.locationName) + ' · ' + escapeHtml(modeLabel) + ' · ' + escapeHtml(new Date().toLocaleString()) + '</div></div>');
+      parts.push('<div class="note"><strong>Shift Notes</strong><br>' + escapeHtml(sheet.note || "(none)") + '</div>');
+
+      var hadEntries = false;
+      LOCATION_ORDER.forEach(function(loc) {
+        var entries = groups[loc] || [];
+        if (!entries.length) return;
+        hadEntries = true;
+        parts.push('<div class="loc">' + escapeHtml(loc) + '</div>');
+        parts.push('<table><thead><tr><th>Item</th><th>Weekend Par</th><th>To Bring</th></tr></thead><tbody>');
+        entries.forEach(function(entry) {
+          var par = mode === "weekday" ? entry.weekdayPar : entry.weekendPar;
+          var qty = mode === "weekday" ? entry.weekdayOrder : entry.weekendOrder;
+          parts.push('<tr><td>' + escapeHtml(prettyItemName(entry.item)) + '<span class="dot"></span></td><td>' + escapeHtml(formatNumber(par)) + '</td><td class="to-bring">' + escapeHtml(formatNumber(qty)) + '</td></tr>');
+        });
+        parts.push('</tbody></table>');
+      });
+
+      if (!hadEntries) {
+        parts.push('<p>No items were selected for this order.</p>');
+      }
+
+      var commissary = sheet.commissaryOrder || getCommissaryState();
+      parts.push('<div class="commissary-wrap">');
+      parts.push('<div class="commissary-title-export">JBSE6 COMMISSARY ORDER</div>');
+      parts.push('<table class="commissary-table-export"><thead><tr><th>Item</th><th>Batch Size</th><th>On Hand<br>(Burgers)</th><th>On Hand<br>(Trailer)</th><th>Weekday Par<br>(@ Burgers)</th><th>Weekend Par<br>(@ Burgers)</th></tr></thead><tbody>');
+      (commissary.rows || []).forEach(function(row) {
+        parts.push('<tr><td>' + escapeHtml(row.item) + '</td><td>' + escapeHtml(row.batchSize) + '</td><td>' + escapeHtml(row.onHandBurgers || '') + '</td><td>' + escapeHtml(row.onHandTrailer || '') + '</td><td>' + escapeHtml(row.weekdayPar) + '</td><td>' + escapeHtml(row.weekendPar) + '</td></tr>');
+      });
+      parts.push('</tbody><tfoot class="commissary-foot"><tr><td colspan="3">Date Ordered: ' + escapeHtml(commissary.dateOrdered || '') + '</td><td colspan="3">MOD Signature: ' + escapeHtml(commissary.modSignature || '') + '</td></tr></tfoot></table></div>');
+
+      var bekRows = (sheet.bekOrder || getBekOrderState()).filter(function(row) {
+        return String(row.onHand || "").trim() || Number(row.order || 0) > 0;
+      });
+      if (bekRows.length) {
+        parts.push('<div class="commissary-wrap">');
+        parts.push('<div class="commissary-title-export">BEN E. KEITH ORDER</div>');
+        parts.push('<table class="commissary-table-export"><thead><tr><th>Item #</th><th>Item</th><th>Brand</th><th>Case Size</th><th>Weekend Par</th><th>On Hand</th><th>Order</th></tr></thead><tbody>');
+        bekRows.forEach(function(row) {
+          parts.push('<tr><td>' + escapeHtml(row.itemNo || '') + '</td><td>' + escapeHtml(row.name || '') + '</td><td>' + escapeHtml(row.brand || '') + '</td><td>' + escapeHtml(row.caseSize || '') + '</td><td>' + escapeHtml(row.weekendPar || '') + '</td><td>' + escapeHtml(row.onHand || '') + '</td><td class="to-bring">' + escapeHtml(row.order || '') + '</td></tr>');
+        });
+        parts.push('</tbody></table></div>');
+      }
+
+      parts.push('<div class="prep-wrap">');
+      parts.push('<div class="prep-head"><div class="prep-logo"><span class="runner">➟</span>JEWBOY<br>sliders</div><div class="prep-title">-PREP LIST-</div><div class="prep-lines"><span>DATE:</span><span class="prep-line">' + escapeHtml(todayString()) + '</span><span>SIGNATURE:</span><span class="prep-line"></span></div></div>');
+      parts.push('<table class="prep-table"><thead><tr><th>Task</th><th>Done</th><th>To Prep</th></tr></thead><tbody>');
+      (sheet.prepList || []).forEach(function(row) {
+        var prepValue = (row.responseType === 'yesno') ? (Number(row.qty || 0) > 0 ? 'Yes' : 'No') : escapeHtml(formatNumber(row.qty || 0) || '0');
+        parts.push('<tr><td class="' + (row.gray ? 'gray' : '') + '">' + escapeHtml(row.task) + '</td><td class="check">' + (row.done ? '☑' : '☐') + '</td><td>' + prepValue + '</td></tr>');
+      });
+      parts.push('</tbody></table></div>');
+      parts.push('</body></html>');
+
+      downloadHtml(parts.join(''), makeDateFilename("jbs_order_sheet_printable", mode));
+    }
+
+    function exportHistory() {
+      var history = loadHistory();
+      if (!history.length) {
+        alert("No saved sheets yet.");
+        return;
+      }
+
+      var parts = [];
+      parts.push('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>JBS Order History</title>');
+      parts.push('<style>body{font-family:system-ui;background:#0f172a;color:#e5e7eb;padding:1rem;} table{border-collapse:collapse;width:100%;margin:1rem 0;} th,td{border:1px solid #334155;padding:.35rem;text-align:left;} th{background:#020617;} .prep{color:#facc15;}</style></head><body>');
+      parts.push('<h1>JBS Order History</h1>');
+      history.forEach(function(sheet, i) {
+        parts.push('<h2>Sheet ' + (i + 1) + ' — ' + escapeHtml(sheet.timestamp || '') + '</h2>');
+        parts.push('<p>View: ' + escapeHtml(sheet.viewMode || '') + '</p>');
+        if (sheet.note) parts.push('<p><strong>Notes:</strong> ' + escapeHtml(sheet.note) + '</p>');
+        parts.push('<table><thead><tr><th>Location</th><th>Item</th><th>Weekday Qty</th><th>Weekend Qty</th></tr></thead><tbody>');
+        (sheet.entries || []).forEach(function(entry) {
+          if (!Number(entry.weekdayOrder || 0) && !Number(entry.weekendOrder || 0)) return;
+          parts.push('<tr><td>' + escapeHtml(entry.location || '') + '</td><td>' + escapeHtml(prettyItemName(entry.item)) + '</td><td>' + escapeHtml(formatNumber(entry.weekdayOrder)) + '</td><td>' + escapeHtml(formatNumber(entry.weekendOrder)) + '</td></tr>');
+        });
+        parts.push('</tbody></table>');
+        parts.push('<p class="prep"><strong>Prep List saved:</strong> ' + ((sheet.prepList || []).length) + ' tasks</p>');
+        parts.push('<p class="prep"><strong>Commissary on-hand saved:</strong> ' + (((sheet.commissaryOrder || {}).rows || []).length) + ' rows</p>');
+      });
+      parts.push('</body></html>');
+      downloadHtml(parts.join(''), makeDateFilename("jbs_order_history", currentMode));
+    }
+
+    function downloadHtml(content, filename) {
+      var blob = new Blob([content], { type: "text/html" });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    function showToast(message) {
+      var toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.add("show");
+      setTimeout(function() {
+        toast.classList.remove("show");
+      }, 1800);
+    }
+
+    function initEvents() {
+      document.querySelectorAll(".mode-btn").forEach(function(btn) {
+        btn.addEventListener("click", function() {
+          setMode(btn.getAttribute("data-mode"));
+          updateBekModePill();
+        });
+      });
+
+      document.getElementById("closeSectionBtn").addEventListener("click", closeSection);
+      document.getElementById("sectionModal").addEventListener("click", function(e) {
+        if (e.target.id === "sectionModal") closeSection();
+      });
+
+      document.getElementById("sectionSearch").addEventListener("input", renderItemList);
+
+      document.getElementById("itemList").addEventListener("click", function(e) {
+        var btn = e.target.closest(".qty-btn");
+        if (!btn) return;
+        var card = btn.closest(".item-card");
+        var index = Number(card.getAttribute("data-index"));
+        var item = ITEMS[index];
+        var step = stepForItem(item);
+        var current = getQty(index, currentMode);
+        var delta = btn.getAttribute("data-action") === "plus" ? step : -step;
+        var next = current + delta;
+        if (next < 0) next = 0;
+        if (next > 0) next = applyIncrement(next, item.increment);
+        setQty(index, currentMode, next);
+        buildLocations();
+        renderItemList();
+        renderTodayChecklist();
+      });
+
+      document.getElementById("prepListBody").addEventListener("click", function(e) {
+        var stepBtn = e.target.closest(".prep-step-btn");
+        if (stepBtn) {
+          var stepper = stepBtn.closest(".prep-stepper");
+          if (!stepper) return;
+
+          var stepIndex = Number(stepper.getAttribute("data-index"));
+          var current = getPrepQty(stepIndex);
+          var delta = stepBtn.getAttribute("data-action") === "plus" ? 1 : -1;
+          var next = current + delta;
+          if (next < 0) next = 0;
+          setPrepQty(stepIndex, next);
+          renderTodayChecklist();
+          return;
+        }
+
+        var choiceBtn = e.target.closest(".prep-choice-btn");
+        if (!choiceBtn) return;
+
+        var selector = choiceBtn.closest(".prep-yesno");
+        if (!selector) return;
+
+        var choiceIndex = Number(selector.getAttribute("data-index"));
+        var choiceNext = Number(choiceBtn.getAttribute("data-value") || "0");
+        setPrepQty(choiceIndex, choiceNext);
+        renderTodayChecklist();
+      });
+
+      document.getElementById("prepListBody").addEventListener("change", function(e) {
+        if (e.target && e.target.matches('input[type="checkbox"]')) {
+          renderTodayChecklist();
+        }
+      });
+
+      var commissarySheet = document.querySelector(".commissary-mobile-sheet");
+      if (commissarySheet) {
+        commissarySheet.addEventListener("click", function(e) {
+          var viewBtn = e.target.closest(".commissary-view-btn");
+          if (viewBtn) {
+            setCommissaryView(viewBtn.getAttribute("data-comm-view"));
+            return;
+          }
+
+          var btn = e.target.closest(".commissary-step-btn");
+          if (!btn) return;
+
+          var stepper = btn.closest(".commissary-stepper");
+          if (!stepper) return;
+
+          var index = Number(stepper.getAttribute("data-index"));
+          var field = stepper.getAttribute("data-field") || "burgers";
+          var current = getCommissaryQty(index, field);
+          var delta = btn.getAttribute("data-action") === "plus" ? 1 : -1;
+          var next = current + delta;
+          if (next < 0) next = 0;
+          setCommissaryQty(index, field, next);
+          renderTodayChecklist();
+        });
+      }
+
+      var commissarySearch = document.getElementById("commissarySearch");
+      if (commissarySearch) {
+        commissarySearch.addEventListener("input", filterCommissaryCards);
+      }
+
+      setCommissaryView("burgers");
+
+      document.querySelectorAll(".dash-nav-btn").forEach(function(btn) {
+        btn.addEventListener("click", function() {
+          var sectionName = btn.getAttribute("data-dash-open");
+          var section = document.querySelector('.collapsible-section[data-section="' + sectionName + '"]');
+          if (!section) return;
+          setSectionCollapsed(section, false);
+          section.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+      });
+
+      buildBekList();
+
+      var bekList = document.getElementById("bekList");
+      if (bekList) {
+        bekList.addEventListener("click", function(e) {
+          var btn = e.target.closest(".bek-step-btn");
+          if (!btn) return;
+          var stepper = btn.closest(".bek-stepper");
+          if (!stepper) return;
+          var index = Number(stepper.getAttribute("data-index"));
+          var current = getBekQty(index);
+          var delta = btn.getAttribute("data-action") === "plus" ? 1 : -1;
+          var next = current + delta;
+          if (next < 0) next = 0;
+          setBekQty(index, next);
+          renderTodayChecklist();
+        });
+      }
+
+      var bekSearch = document.getElementById("bekSearch");
+      if (bekSearch) {
+        bekSearch.addEventListener("input", filterBekCards);
+      }
+
+      document.querySelectorAll(".bek-onhand-input").forEach(function(input) {
+        input.addEventListener("input", renderTodayChecklist);
+      });
+
+      updateBekModePill();
+      filterBekCards();
+
+      var guidedStartBtn = document.getElementById("guidedStartBtn");
+      if (guidedStartBtn) {
+        guidedStartBtn.addEventListener("click", startGuidedOrders);
+      }
+
+      var guidedPrimaryAction = document.getElementById("guidedPrimaryAction");
+      if (guidedPrimaryAction) {
+        guidedPrimaryAction.addEventListener("click", function() {
+          var taskIds = getTodayTaskIds();
+          var taskId = taskIds[guidedCurrentIndex];
+          if (!taskId) return;
+
+          if (isTaskDone(taskId)) {
+            goToNextGuidedStep();
+            return;
+          }
+
+          startDailyTask(taskId);
+        });
+      }
+
+      var guidedMarkDoneBtn = document.getElementById("guidedMarkDoneBtn");
+      if (guidedMarkDoneBtn) {
+        guidedMarkDoneBtn.addEventListener("click", function() {
+          var taskIds = getTodayTaskIds();
+          var taskId = taskIds[guidedCurrentIndex];
+          if (!taskId) return;
+          var nextDone = !isTaskDone(taskId);
+          setTaskDone(taskId, nextDone, "manual");
+          if (nextDone) goToNextGuidedStep();
+          else renderGuidedStep();
+        });
+      }
+
+      var guidedPrevArrow = document.getElementById("guidedPrevArrow");
+      if (guidedPrevArrow) {
+        guidedPrevArrow.addEventListener("click", function() {
+          var taskIds = getTodayTaskIds();
+          if (!taskIds.length) return;
+          guidedCurrentIndex -= 1;
+          if (guidedCurrentIndex < 0) guidedCurrentIndex = taskIds.length - 1;
+          renderGuidedStep();
+        });
+      }
+
+      var guidedMiniBack = document.getElementById("guidedMiniBack");
+      if (guidedMiniBack) {
+        guidedMiniBack.addEventListener("click", function() {
+          setGuidedScreen("guidedLanding");
+          renderTodayChecklist();
+        });
+      }
+
+      var guidedNextArrow = document.getElementById("guidedNextArrow");
+      if (guidedNextArrow) {
+        guidedNextArrow.addEventListener("click", function() {
+          var taskIds = getTodayTaskIds();
+          if (!taskIds.length) return;
+          guidedCurrentIndex += 1;
+          if (guidedCurrentIndex >= taskIds.length) guidedCurrentIndex = 0;
+          renderGuidedStep();
+        });
+      }
+
+      var guidedHomeBtn = document.getElementById("guidedHomeBtn");
+      if (guidedHomeBtn) {
+        guidedHomeBtn.addEventListener("click", function() {
+          setGuidedScreen("guidedLanding");
+          renderTodayChecklist();
+        });
+      }
+
+      var guidedExportBtn = document.getElementById("guidedExportBtn");
+      if (guidedExportBtn) {
+        guidedExportBtn.addEventListener("click", function() {
+          if (confirmMissingBeforeExport()) exportPrintableSheet();
+        });
+      }
+
+      document.getElementById("saveBtn").addEventListener("click", saveCurrentSheet);
+      document.getElementById("reviewBtn").addEventListener("click", openReview);
+      document.getElementById("exportPrettyBtn").addEventListener("click", function() {
+        if (confirmMissingBeforeExport()) exportPrintableSheet();
+      });
+
+      document.getElementById("closeReviewBtn").addEventListener("click", closeReview);
+      document.getElementById("reviewBackBtn").addEventListener("click", closeReview);
+      document.getElementById("reviewSaveBtn").addEventListener("click", function() { saveCurrentSheet(); closeReview(); });
+      document.getElementById("reviewExportBtn").addEventListener("click", function() {
+        if (confirmMissingBeforeExport()) exportPrintableSheet();
+      });
+      document.getElementById("reviewModal").addEventListener("click", function(e) {
+        if (e.target.id === "reviewModal") closeReview();
+      });
+
+      document.addEventListener("keydown", function(e) {
+        if (e.key === "Escape") {
+          closeSection();
+          closeReview();
+        }
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+      buildPrepList();
+      updatePrepDateLine();
+      buildLocations();
+      updateSavedInfo();
+      renderTodayChecklist();
+      initCollapsibleSections();
+      hideAllWorkflowSections();
+      initEvents();
+    });
+  </script>
+</body>
+</html>
